@@ -76,7 +76,7 @@ func returnRouteHandlerMethods(name string, hasCRUD bool) (string, error) {
 			fmt.Sprintf("// succeeded\n") +
 			fmt.Sprintf("// should send success header\n") +
 			fmt.Sprintf("helpers.SendSuccessHeader(w, nil) \n") +
-			fmt.Sprintf("}\n}\n\n")
+			fmt.Sprintf("}\n\n")
 
 		// Delete
 		methodBlock += fmt.Sprintf("\n\n// Delete%s will delete a %s\n", strings.Title(name), strings.ToLower(name)) +
@@ -94,7 +94,7 @@ func returnRouteHandlerMethods(name string, hasCRUD bool) (string, error) {
 			fmt.Sprintf("// succeeded\n") +
 			fmt.Sprintf("// should send success header\n") +
 			fmt.Sprintf("helpers.SendSuccessHeader(w, nil) \n") +
-			fmt.Sprintf("}\n}\n\n")
+			fmt.Sprintf("}\n\n")
 
 		// Get All
 		methodBlock += fmt.Sprintf("\n\n// GetAll%s will get all %s\n", strings.Title(name), strings.ToLower(name)) +
@@ -112,7 +112,7 @@ func returnRouteHandlerMethods(name string, hasCRUD bool) (string, error) {
 			fmt.Sprintf("// succeeded\n") +
 			fmt.Sprintf("// should send success header\n") +
 			fmt.Sprintf("helpers.SendSuccessHeader(w, nil) \n") +
-			fmt.Sprintf("}\n}\n\n")
+			fmt.Sprintf("}\n\n")
 
 		// Get
 		methodBlock += fmt.Sprintf("\n\n// Get%s will get a single %s\n", strings.Title(name), strings.ToLower(name)) +
@@ -130,11 +130,11 @@ func returnRouteHandlerMethods(name string, hasCRUD bool) (string, error) {
 			fmt.Sprintf("// succeeded\n") +
 			fmt.Sprintf("// should send success header\n") +
 			fmt.Sprintf("helpers.SendSuccessHeader(w, nil) \n") +
-			fmt.Sprintf("}\n}\n\n")
+			fmt.Sprintf("}\n\n")
 
 		// Update
 		methodBlock += fmt.Sprintf("\n\n// Update%s will update %s\n", strings.Title(name), strings.ToLower(name)) +
-			fmt.Sprintf("func (rh *%s) Get%s(w http.ResponseWriter, r *http.Request) {\n", strings.Title(name), strings.Title(name)) +
+			fmt.Sprintf("func (rh *%s) Update%s(w http.ResponseWriter, r *http.Request) {\n", strings.Title(name), strings.Title(name)) +
 			fmt.Sprintf("// validate context \n") +
 			fmt.Sprintf("//\n\n") +
 			fmt.Sprintf("// get the query id \n") +
@@ -150,7 +150,7 @@ func returnRouteHandlerMethods(name string, hasCRUD bool) (string, error) {
 			fmt.Sprintf("// succeeded\n") +
 			fmt.Sprintf("// should send success header\n") +
 			fmt.Sprintf("helpers.SendSuccessHeader(w, nil) \n") +
-			fmt.Sprintf("}\n}\n\n")
+			fmt.Sprintf("}\n\n")
 	}
 
 	return methodBlock, nil

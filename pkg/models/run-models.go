@@ -21,31 +21,31 @@ func ReturnMainFile(serviceArray []string, hasDB bool) ([]byte, error) {
 		log.Println(err)
 	}
 	// initialize router and router handlers
-	routerString, err := returnMainConfigurationSection(hasDB, serviceArray)
+	routerString, err := returnMainRouterSection(hasDB, serviceArray)
 	if err != nil {
 		// handle err
 		log.Println(err)
 	}
 	// initialize middleware
-	middlewareString, err := returnMainConfigurationSection(hasDB, serviceArray)
+	middlewareString, err := returnMainMiddlewareSection()
 	if err != nil {
 		// handle err
 		log.Println(err)
 	}
 	// health check
-	healthString, err := returnMainConfigurationSection(hasDB, serviceArray)
+	healthString, err := returnMainHealthSection()
 	if err != nil {
 		// handle err
 		log.Println(err)
 	}
 	// routes
-	routesString, err := returnMainConfigurationSection(hasDB, serviceArray)
+	routesString, err := returnMainRoutesSection(hasDB, serviceArray)
 	if err != nil {
 		// handle err
 		log.Println(err)
 	}
 	// server
-	serverString, err := returnMainConfigurationSection(hasDB, serviceArray)
+	serverString, err := returnMainServerSection()
 	if err != nil {
 		// handle err
 		log.Println(err)
@@ -250,7 +250,8 @@ func returnConfigFuncsSection() (string, error) {
 		fmt.Sprintf("		if c.Password == \"\" {\n") +
 		fmt.Sprintf("			return fmt.Sprintf(\"host=%%s port=%%d user=%%s dbname=%%s sslmode=disable\", c.Host, c.Port, c.User, c.Dbname)\n") +
 		fmt.Sprintf("		}\n") +
-		fmt.Sprintf("		return fmt.Sprintf(\"user=%%s password=%%s host=%%s dbname=%%s\", c.User, c.Password, c.Host, c.Dbname)\n}\n\n")
+		fmt.Sprintf("		return fmt.Sprintf(\"user=%%s password=%%s host=%%s dbname=%%s\", c.User, c.Password, c.Host, c.Dbname)\n}\n") +
+		fmt.Sprintf("	return fmt.Sprintf(\"user=%%s password=%%s host=%%s dbname=%%s\", c.User, c.Password, c.Host, c.Dbname)\n}\n\n")
 
 	loadConfigString := fmt.Sprintf("// LoadConfig initializes the db based on env variables\n") +
 		fmt.Sprintf("func LoadConfig() Config {\n") +

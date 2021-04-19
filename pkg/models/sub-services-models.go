@@ -50,15 +50,15 @@ func returnSubServiceSvcDefinition(name string) (string, error) {
 		fmt.Sprintf("	ctx := &db.%s{}\n", strings.Title(name)+"StructDB") +
 		fmt.Sprintf("	ctx.DB = s.db \n") +
 		fmt.Sprintf("	srvc := &%s{}\n", strings.ToLower(name)+"Service") +
-		fmt.Sprintf("	srvc.%s = &validation.%s{%s: ctx}\n", strings.Title(name)+"DB", strings.Title(name)+"Validator", strings.Title(name)+"DB") +
+		fmt.Sprintf("	srvc.I%s = &validation.%s{%s: ctx}\n", strings.Title(name)+"DB", strings.Title(name)+"Validator", strings.Title(name)+"DB") +
 		fmt.Sprintf("	return srvc\n }\n\n") +
 		// interface type
 		fmt.Sprintf("// %s is a wrapper for related components\n", strings.Title(name)+"Services") +
 		fmt.Sprintf("type %s interface {\n", strings.Title(name)+"Service") +
-		fmt.Sprintf("	db.%s\n}\n\n", strings.Title(name)+"DB") +
+		fmt.Sprintf("	db.I%s\n}\n\n", strings.Title(name)+"DB") +
 		// struct type
 		fmt.Sprintf("type %s struct {\n", strings.ToLower(name)+"DB") +
-		fmt.Sprintf("	db.%s\n}\n", strings.Title(name)+"DB")
+		fmt.Sprintf("	db.I%s\n}\n", strings.Title(name)+"DB")
 
 	return srvcDefinitionString, nil
 }
@@ -224,7 +224,7 @@ func returnServiceFileGlobalSection(hasDB bool) (string, error) {
 			fmt.Sprintf("	if err != nil {\n") +
 			fmt.Sprintf("		// Handle errors!\n") +
 			fmt.Sprintf("		log.Println(err)\n	}\n\n") +
-			fmt.Sprintf("	fmt.Printf(\"Applied %%d migrations!\n\", n)\n") +
+			fmt.Sprintf("	fmt.Printf(\"Applied %%d migrations!\", n)\n") +
 			fmt.Sprintf("	return nil\n} \n")
 
 		// Migrate Down
@@ -233,11 +233,11 @@ func returnServiceFileGlobalSection(hasDB bool) (string, error) {
 			fmt.Sprintf("	// run the migrate here\n") +
 			fmt.Sprintf("	migrations := &migrate.FileMigrationSource{\n") +
 			fmt.Sprintf("		Dir: \"../resources/migrations\",\n	}\n") +
-			fmt.Sprintf("	n, err := migrate.Exec(s.db.DB, \"postgres\", migrations, migrate.Down)") +
+			fmt.Sprintf("	n, err := migrate.Exec(s.db.DB, \"postgres\", migrations, migrate.Down)\n") +
 			fmt.Sprintf("	if err != nil {\n") +
 			fmt.Sprintf("		// Handle errors!\n") +
 			fmt.Sprintf("		log.Println(err)\n}\n\n") +
-			fmt.Sprintf("	fmt.Printf(\"Applied %%d migrations!\n\", n)\n") +
+			fmt.Sprintf("	fmt.Printf(\"Applied %%d migrations!\", n)\n") +
 			fmt.Sprintf("	return nil\n}\n")
 
 		// helper to drop tables for faster local development

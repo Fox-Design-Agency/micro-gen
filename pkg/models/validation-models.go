@@ -45,17 +45,18 @@ func returnTopValidationFile() (string, error) {
 func returnValidationDefinitions(name string) (string, error) {
 	validationDefinitions := fmt.Sprintf("\n\n // %s is the validation/normalization struct for %s\n", strings.Title(name)+"Validator", name) +
 		fmt.Sprintf("type %s struct {\n", strings.Title(name)+"Validator") +
-		fmt.Sprintf("	db.%s\n}\n\n", strings.Title(name)+"DB") +
+		fmt.Sprintf("	db.I%s\n}\n\n", strings.Title(name)+"DB") +
 		fmt.Sprintf("type %s func(*models.%s) error\n\n", strings.ToLower(name)+"ValFunc", strings.Title(name))
 
-	validationRunnerFunc := fmt.Sprintf("func run%sValFuncs(%s *models.%s, fns ...%s) error) {\n",
-		strings.Title(name), name, strings.Title(name), strings.Title(name)+"ValFunc") +
+	validationRunnerFunc := fmt.Sprintf("func run%sValFuncs(%s *models.%s, fns ...%s) error {\n",
+		strings.Title(name), name, strings.Title(name), strings.ToLower(name)+"ValFunc") +
 		fmt.Sprintf("	for _, fn := range fns {\n") +
 		fmt.Sprintf("		if err := fn(%s); err != nil {\n", strings.ToLower(name)) +
-		fmt.Sprintf("			return err\n }\n }\n\n") +
+		fmt.Sprintf("			return err\n }\n }\n}\n\n") +
+		fmt.Sprintf("		return nil\n}\n\n") +
 		//type safety checker
 		fmt.Sprintf("// for safety, comfort, and security\n") +
-		fmt.Sprintf("var _ db.%s = &%s {}\n\n", strings.Title(name)+"DB", strings.Title(name)+"Validator")
+		fmt.Sprintf("var _ db.I%s = &%s {}\n\n", strings.Title(name)+"DB", strings.Title(name)+"Validator")
 
 	validationRunnerMethods := topCommentBlock +
 		fmt.Sprintf("\n/	Add New validation runner methods below \n") +
