@@ -20,7 +20,10 @@ func initializeRun(projectName string, serviceArray []string, hasDB bool) (err e
 			//handle err
 		}
 	}
-
+	err = initializeSecretFile(projectName)
+	if err != nil {
+		//handle err
+	}
 	return nil
 }
 
@@ -47,6 +50,22 @@ func initializeConfigFile(projectName string) (err error) {
 	b, _ := models.ReturnConfigFile()
 	// set the filename
 	fileName := fmt.Sprintf("/run/config.go")
+	// write the file
+	err = ioutil.WriteFile(projectName+fileName, b, 0755)
+	if err != nil {
+		// handle the error
+		log.Fatal(err)
+	}
+	return nil
+}
+
+// initializeSecretFile will initialize the secretStuff.go file and write
+// the required configurations within the file
+func initializeSecretFile(projectName string) (err error) {
+	// get the byte slice
+	b, _ := models.ReturnSecretStuffFile()
+	// set the filename
+	fileName := fmt.Sprintf("/run/secretStuff.go")
 	// write the file
 	err = ioutil.WriteFile(projectName+fileName, b, 0755)
 	if err != nil {

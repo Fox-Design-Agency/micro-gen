@@ -250,7 +250,7 @@ func returnConfigFuncsSection() (string, error) {
 		fmt.Sprintf("		if c.Password == \"\" {\n") +
 		fmt.Sprintf("			return fmt.Sprintf(\"host=%%s port=%%d user=%%s dbname=%%s sslmode=disable\", c.Host, c.Port, c.User, c.Dbname)\n") +
 		fmt.Sprintf("		}\n") +
-		fmt.Sprintf("		return fmt.Sprintf(\"user=%%s password=%%s host=%%s dbname=%%s\", c.User, c.Password, c.Host, c.Dbname)\n}\n") +
+		fmt.Sprintf("		return fmt.Sprintf(\"user=%%s password=%%s host=%%s dbname=%%s sslmode=disable\", c.User, c.Password, c.Host, c.Dbname)\n}\n") +
 		fmt.Sprintf("	return fmt.Sprintf(\"user=%%s password=%%s host=%%s dbname=%%s\", c.User, c.Password, c.Host, c.Dbname)\n}\n\n")
 
 	loadConfigString := fmt.Sprintf("// LoadConfig initializes the db based on env variables\n") +

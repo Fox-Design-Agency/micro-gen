@@ -50,7 +50,7 @@ func returnSubServiceSvcDefinition(name string) (string, error) {
 		fmt.Sprintf("	ctx := &db.%s{}\n", strings.Title(name)+"StructDB") +
 		fmt.Sprintf("	ctx.DB = s.db \n") +
 		fmt.Sprintf("	srvc := &%s{}\n", strings.ToLower(name)+"Service") +
-		fmt.Sprintf("	srvc.I%s = &validation.%s{%s: ctx}\n", strings.Title(name)+"DB", strings.Title(name)+"Validator", strings.Title(name)+"DB") +
+		fmt.Sprintf("	srvc.I%s = &validation.%s{I%s: ctx}\n", strings.Title(name)+"DB", strings.Title(name)+"Validator", strings.Title(name)+"DB") +
 		fmt.Sprintf("	return srvc\n }\n\n") +
 		// interface type
 		fmt.Sprintf("// %s is a wrapper for related components\n", strings.Title(name)+"Services") +
@@ -219,7 +219,7 @@ func returnServiceFileGlobalSection(hasDB bool) (string, error) {
 			fmt.Sprintf("func (s *Services) MigrateDBUP() error {\n") +
 			fmt.Sprintf("	// run the migrate here\n") +
 			fmt.Sprintf("	migrations := &migrate.FileMigrationSource{\n") +
-			fmt.Sprintf("		Dir: \"../resources/migrations\",\n	}\n") +
+			fmt.Sprintf("		Dir: \"../migrations\",\n	}\n") +
 			fmt.Sprintf("	n, err := migrate.Exec(s.db.DB, \"postgres\", migrations, migrate.Up)\n") +
 			fmt.Sprintf("	if err != nil {\n") +
 			fmt.Sprintf("		// Handle errors!\n") +
@@ -232,7 +232,7 @@ func returnServiceFileGlobalSection(hasDB bool) (string, error) {
 			fmt.Sprintf("func (s *Services) MigrateDBDown() error {\n") +
 			fmt.Sprintf("	// run the migrate here\n") +
 			fmt.Sprintf("	migrations := &migrate.FileMigrationSource{\n") +
-			fmt.Sprintf("		Dir: \"../resources/migrations\",\n	}\n") +
+			fmt.Sprintf("		Dir: \"../migrations\",\n	}\n") +
 			fmt.Sprintf("	n, err := migrate.Exec(s.db.DB, \"postgres\", migrations, migrate.Down)\n") +
 			fmt.Sprintf("	if err != nil {\n") +
 			fmt.Sprintf("		// Handle errors!\n") +
