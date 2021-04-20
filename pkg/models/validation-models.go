@@ -52,7 +52,7 @@ func returnValidationDefinitions(name string) (string, error) {
 		strings.Title(name), name, strings.Title(name), strings.ToLower(name)+"ValFunc") +
 		fmt.Sprintf("	for _, fn := range fns {\n") +
 		fmt.Sprintf("		if err := fn(%s); err != nil {\n", strings.ToLower(name)) +
-		fmt.Sprintf("			return err\n }\n }\n}\n\n") +
+		fmt.Sprintf("			return err\n }\n }\n") +
 		fmt.Sprintf("		return nil\n}\n\n") +
 		//type safety checker
 		fmt.Sprintf("// for safety, comfort, and security\n") +

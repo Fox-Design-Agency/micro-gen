@@ -161,9 +161,16 @@ Once the outline for the service has been set, it then needs to be registered in
 Once registered, then go to main.go found in ./run to register the new service and intialize the controller if desired. If routes will connect to this new subservice, then make the appropiate place in the routes section and note the section through comments.`), nil
 }
 
-// ReturnMigrations will return the byte slice of the generic Migrations file
-func ReturnMigrations() ([]byte, error) {
-	return []byte(`PUT DB MIGRATION FILES HERE`), nil
+// ReturnMigrationSeedFile will return the byte slice of the generic Migrations file
+func ReturnMigrationSeedFile() ([]byte, error) {
+	return []byte(`-- +migrate Up
+	-- SQL in section 'Up' is executed when this migration is applied
+	
+	
+	
+	-- +migrate Down
+	-- SQL section 'Down' is executed when this migration is rolled back
+	`), nil
 }
 
 // ReturnDockerignore will return the byte slice of the generic .dockerignore file

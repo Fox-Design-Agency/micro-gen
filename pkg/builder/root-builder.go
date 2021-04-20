@@ -87,19 +87,36 @@ func initializeRootFiles(answers *models.Questions) (err error) {
 
 // initializeMigrations will create a migrations folder and a blank README
 // placeholder for DB migration files
+// creates:
+// - 001_seed.sql
+// - 001_seed_func.sql
 func initializeMigrations(projectName string) (err error) {
+	// ensure that the resources folder exists
+	err = os.Mkdir(projectName+"/resources", 0755)
+	if err != nil {
+		log.Println(err)
+		os.Exit(1)
+	}
 	// ensure that the migrations folder exists
-	err = os.Mkdir(projectName+"/migrations", 0755)
+	err = os.Mkdir(projectName+"/resources/migrations", 0755)
 	if err != nil {
 		log.Println(err)
 		os.Exit(1)
 	}
 
-	// create a blank README for utilization of the migrations folder
-	b, _ := models.ReturnMigrations()
-	err = ioutil.WriteFile(projectName+"/migrations/README", b, 0755)
+	// create a blank 001 seed file
+	b1, _ := models.ReturnMigrationSeedFile()
+	err = ioutil.WriteFile(projectName+"/resources/migrations/001_seed.sql", b1, 0755)
 	if err != nil {
 		log.Fatal(err)
 	}
+
+	// create a blank 001 seed func file
+	b2, _ := models.ReturnMigrationSeedFile()
+	err = ioutil.WriteFile(projectName+"/resources/migrations/001_seed_func.sql", b2, 0755)
+	if err != nil {
+		log.Fatal(err)
+	}
+
 	return nil
 }

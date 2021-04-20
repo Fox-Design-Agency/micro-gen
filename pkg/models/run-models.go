@@ -88,7 +88,7 @@ func returnMainConfigurationSection(hasDB bool, serviceArray []string) (string, 
 		topCommentBlock +
 		fmt.Sprintf("\n/	Configuration\n") +
 		bottomCommentBlock +
-		fmt.Sprintf("\n // load application configuration\n") +
+		fmt.Sprintf("\n\n // load application configuration\n") +
 		fmt.Sprintf("cfg := LoadConfig()\n\n") +
 		fmt.Sprintf("// default application port\n") +
 		fmt.Sprintf("port := cfg.Port\n\n") +
@@ -124,9 +124,9 @@ func returnMainConfigurationSection(hasDB bool, serviceArray []string) (string, 
 // section of the main.go file
 func returnMainRouterSection(hasDB bool, serviceArray []string) (string, error) {
 	topString := topCommentBlock +
-		fmt.Sprintf("/	Initialize router and controllers\n") +
+		fmt.Sprintf("\n/	Initialize router and controllers\n") +
 		bottomCommentBlock +
-		fmt.Sprintf("\nr := mux.NewRouter()\n\n")
+		fmt.Sprintf("\n\nr := mux.NewRouter()\n\n")
 	for _, v := range serviceArray {
 		topString += fmt.Sprintf("%sRH := routeHandlers.New%s(\n", strings.ToLower(v), strings.Title(v)) +
 			fmt.Sprintf("	srvcs.%s)\n", strings.Title(v))
@@ -140,7 +140,7 @@ func returnMainRouterSection(hasDB bool, serviceArray []string) (string, error) 
 // section of the main.go file
 func returnMainMiddlewareSection() (string, error) {
 	topString := topCommentBlock +
-		fmt.Sprintf("\n /	Middleware\n") +
+		fmt.Sprintf("\n/	Middleware\n") +
 		bottomCommentBlock +
 		fmt.Sprintf("\n\n")
 
@@ -151,9 +151,9 @@ func returnMainMiddlewareSection() (string, error) {
 // check section of the main.go file
 func returnMainHealthSection() (string, error) {
 	topString := topCommentBlock +
-		fmt.Sprintf("\n /	Health Check & Container routes\n") +
+		fmt.Sprintf("\n/	Health Check & Container routes\n") +
 		bottomCommentBlock +
-		fmt.Sprintf("\nr.HandleFunc(\"/health\", func(rw http.ResponseWriter, r *http.Request) { rw.WriteHeader(http.StatusOK) })\n")
+		fmt.Sprintf("\n\nr.HandleFunc(\"/health\", func(rw http.ResponseWriter, r *http.Request) { rw.WriteHeader(http.StatusOK) })\n\n")
 
 	return topString, nil
 }
@@ -164,7 +164,7 @@ func returnMainRoutesSection(hasDB bool, serviceArray []string) (string, error) 
 	topString := ""
 	for _, v := range serviceArray {
 		topString += topCommentBlock +
-			fmt.Sprintf("\n /	%s routes\n", strings.Title(v)) +
+			fmt.Sprintf("\n/	%s routes\n", strings.Title(v)) +
 			bottomCommentBlock +
 			fmt.Sprintf("\n")
 	}
@@ -176,9 +176,9 @@ func returnMainRoutesSection(hasDB bool, serviceArray []string) (string, error) 
 // section of the main.go file
 func returnMainServerSection() (string, error) {
 	topString := topCommentBlock +
-		fmt.Sprintf("\n /	Server\n") +
+		fmt.Sprintf("\n/	Server\n") +
 		bottomCommentBlock +
-		fmt.Sprintf("\nvar srv *http.Server\n\n") +
+		fmt.Sprintf("\n\nvar srv *http.Server\n\n") +
 		fmt.Sprintf("// establishes the server contraints and information\n") +
 		fmt.Sprintf("srv = &http.Server{\n") +
 		fmt.Sprintf("Handler: handlers.CORS(handlers.AllowedHeaders([]string{\"origin\", \"X-Requested-With\", \"Content-Type\", \"Authorization\"}), handlers.AllowedMethods([]string{\"GET\", \"POST\", \"PUT\", \"HEAD\", \"OPTIONS\"}),\n") +

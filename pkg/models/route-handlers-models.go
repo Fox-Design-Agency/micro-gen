@@ -27,9 +27,9 @@ func ReturnRouteHandlerLayer(name string, hasCRUD bool) ([]byte, error) {
 func returnRouteHandlerTop(name string) (string, error) {
 	topString := fmt.Sprintf("package routeHandlers\n\n") +
 		topCommentBlock +
-		fmt.Sprintf("\n / Only Change this section if you are adding a new subservice onto") +
-		fmt.Sprintf("\n / this service. Adding any new subservice will nessesitate a change") +
-		fmt.Sprintf("\n / in the main.go route-handler declaration found in run/main.go\n") +
+		fmt.Sprintf("\n/ Only Change this section if you are adding a new subservice onto") +
+		fmt.Sprintf("\n/ this service. Adding any new subservice will nessesitate a change") +
+		fmt.Sprintf("\n/ in the main.go route-handler declaration found in run/main.go\n") +
 		bottomCommentBlock
 
 	newStructDeclaration := fmt.Sprintf("\n\n// %s is a func that created a new %s struct.", "New"+strings.Title(name), strings.Title(name)) +

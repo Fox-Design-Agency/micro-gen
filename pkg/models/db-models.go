@@ -49,7 +49,7 @@ func returnDBInterfaceDeclartion(hasCrud bool, name string) (string, error) {
 		bottomCommentBlock
 
 	// create the interface
-	interfaceBlock := fmt.Sprintf("\n // %s is used to interact and manage %s\n", "I"+strings.Title(name)+"DB", name) +
+	interfaceBlock := fmt.Sprintf("\n\n // %s is used to interact and manage %s\n", "I"+strings.Title(name)+"DB", name) +
 		fmt.Sprintf(" type %s interface {\n", "I"+strings.Title(name)+"DB")
 	if hasCrud {
 		interfaceBlock += fmt.Sprintf("Create%s() error\n", strings.Title(name)) +

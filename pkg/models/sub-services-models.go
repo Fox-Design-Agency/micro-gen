@@ -31,11 +31,11 @@ func returnSubServiceTop(name string) (string, error) {
 	// main service fun
 	topString := fmt.Sprintf("package services\n\n") +
 		topCommentBlock +
-		fmt.Sprintf("\n / Only Change this section if you are adding a new capability onto") +
-		fmt.Sprintf("\n / this subservice. Adding any new capability may nessesitate a change") +
-		fmt.Sprintf("\n / in the services.go WithAlerts func found in pkg/models/services.go") +
-		fmt.Sprintf("\n / If you do not understand what is happening here, look into") +
-		fmt.Sprintf("\n / Interface Chaining. \n") +
+		fmt.Sprintf("\n/ Only Change this section if you are adding a new capability onto") +
+		fmt.Sprintf("\n/ this subservice. Adding any new capability may nessesitate a change") +
+		fmt.Sprintf("\n/ in the services.go With%s func found in pkg/sub-services/services.go", strings.Title(name)) +
+		fmt.Sprintf("\n/ If you do not understand what is happening here, look into") +
+		fmt.Sprintf("\n/ Interface Chaining. \n") +
 		bottomCommentBlock
 	return topString, nil
 }
@@ -57,7 +57,7 @@ func returnSubServiceSvcDefinition(name string) (string, error) {
 		fmt.Sprintf("type %s interface {\n", strings.Title(name)+"Service") +
 		fmt.Sprintf("	db.I%s\n}\n\n", strings.Title(name)+"DB") +
 		// struct type
-		fmt.Sprintf("type %s struct {\n", strings.ToLower(name)+"DB") +
+		fmt.Sprintf("type %s struct {\n", strings.ToLower(name)+"Service") +
 		fmt.Sprintf("	db.I%s\n}\n", strings.Title(name)+"DB")
 
 	return srvcDefinitionString, nil
@@ -161,17 +161,17 @@ func returnServiceFileNewServiceSection(hasDB bool, serviceArray []string) (stri
 	}
 	commentBlock := fmt.Sprintf("\n") +
 		topCommentBlock +
-		fmt.Sprintf("\n / 	Shouldn't need to change this.") +
+		fmt.Sprintf("\n/ 	Shouldn't need to change this.\n") +
 		bottomCommentBlock
 
-	structString := fmt.Sprintf("\n// NewServices injects the service struct pointer to the above with funcs\n") +
+	structString := fmt.Sprintf("\n\n// NewServices injects the service struct pointer to the above with funcs\n") +
 		fmt.Sprintf("func NewServices(cfgs ...Config) (*Services, error) {\n") +
 		fmt.Sprintf("	var s Services\n") +
 		fmt.Sprintf("	for _, cfg := range cfgs {\n") +
 		fmt.Sprintf("		if err := cfg(&s); err != nil {\n") +
 		fmt.Sprintf("			return nil, err\n		}\n	}\n") +
 		fmt.Sprintf("	return &s, nil\n") +
-		fmt.Sprintf("}\n")
+		fmt.Sprintf("}\n\n")
 
 	return topString +
 		withStrings +
@@ -183,10 +183,10 @@ func returnServiceFileNewServiceSection(hasDB bool, serviceArray []string) (stri
 // services struct that is found in the services.go file
 func returnServiceFileServicesStructSection(hasDB bool, serviceArray []string) (string, error) {
 	commentBlock := topCommentBlock +
-		fmt.Sprintf("\n /	Add a field on the Services declaration when adding a new subService") +
+		fmt.Sprintf("\n/	Add a field on the Services declaration when adding a new subService\n") +
 		bottomCommentBlock
 
-	servicesStruct := fmt.Sprintf("\n// Services is all the sub services within this service\n") +
+	servicesStruct := fmt.Sprintf("\n\n// Services is all the sub services within this service\n") +
 		fmt.Sprintf("type Services struct {\n")
 
 	for _, v := range serviceArray {
@@ -194,7 +194,7 @@ func returnServiceFileServicesStructSection(hasDB bool, serviceArray []string) (
 	}
 
 	if hasDB {
-		servicesStruct += fmt.Sprintf("	db	*sqlx.DB\n}\n")
+		servicesStruct += fmt.Sprintf("	db	*sqlx.DB\n}\n\n")
 	}
 
 	return commentBlock + servicesStruct, nil
@@ -205,12 +205,12 @@ func returnServiceFileServicesStructSection(hasDB bool, serviceArray []string) (
 // are set onto the services struct
 func returnServiceFileGlobalSection(hasDB bool) (string, error) {
 	globalString := topCommentBlock +
-		fmt.Sprintf("\n /	Add any global methods that services will have access to\n") +
+		fmt.Sprintf("\n/	Add any global methods that services will have access to\n") +
 		bottomCommentBlock
 
 	if hasDB {
 		// Close
-		globalString += fmt.Sprintf("\n // Close will close the database connection\n") +
+		globalString += fmt.Sprintf("\n\n// Close will close the database connection\n") +
 			fmt.Sprintf("func (s *Services) Close() error {\n") +
 			fmt.Sprintf("	return s.db.Close()\n}\n")
 
@@ -219,12 +219,12 @@ func returnServiceFileGlobalSection(hasDB bool) (string, error) {
 			fmt.Sprintf("func (s *Services) MigrateDBUP() error {\n") +
 			fmt.Sprintf("	// run the migrate here\n") +
 			fmt.Sprintf("	migrations := &migrate.FileMigrationSource{\n") +
-			fmt.Sprintf("		Dir: \"../migrations\",\n	}\n") +
+			fmt.Sprintf("		Dir: \"../resources/migrations\",\n	}\n") +
 			fmt.Sprintf("	n, err := migrate.Exec(s.db.DB, \"postgres\", migrations, migrate.Up)\n") +
 			fmt.Sprintf("	if err != nil {\n") +
 			fmt.Sprintf("		// Handle errors!\n") +
 			fmt.Sprintf("		log.Println(err)\n	}\n\n") +
-			fmt.Sprintf("	fmt.Printf(\"Applied %%d migrations!\", n)\n") +
+			fmt.Sprintf("	fmt.Printf(\"Applied %%d migrations!\\n\", n)\n") +
 			fmt.Sprintf("	return nil\n} \n")
 
 		// Migrate Down
@@ -232,12 +232,12 @@ func returnServiceFileGlobalSection(hasDB bool) (string, error) {
 			fmt.Sprintf("func (s *Services) MigrateDBDown() error {\n") +
 			fmt.Sprintf("	// run the migrate here\n") +
 			fmt.Sprintf("	migrations := &migrate.FileMigrationSource{\n") +
-			fmt.Sprintf("		Dir: \"../migrations\",\n	}\n") +
+			fmt.Sprintf("		Dir: \"../resources/migrations\",\n	}\n") +
 			fmt.Sprintf("	n, err := migrate.Exec(s.db.DB, \"postgres\", migrations, migrate.Down)\n") +
 			fmt.Sprintf("	if err != nil {\n") +
 			fmt.Sprintf("		// Handle errors!\n") +
 			fmt.Sprintf("		log.Println(err)\n}\n\n") +
-			fmt.Sprintf("	fmt.Printf(\"Applied %%d migrations!\", n)\n") +
+			fmt.Sprintf("	fmt.Printf(\"Applied %%d migrations!\\n\", n)\n") +
 			fmt.Sprintf("	return nil\n}\n")
 
 		// helper to drop tables for faster local development
