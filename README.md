@@ -1,6 +1,6 @@
 # MicroService Generator
 
-There are a number of issues with this project and it is not ready for complete use, as there are some manual items that need to be compelted after the template structure is generated.
+This project is likely nearing capability for general use with Golang microservice utilizing Postgres DB.
 
 ## Table of Contents
 
@@ -41,7 +41,7 @@ From the command line, you should be able to then run:
 micro-gen
 ```
 
-and the questions will initiate. This process will start to change in the near future.
+and the questions will initiate. This process will start to change in the near future. There are currently no flags that are processing.
 
 ## How to Plan
 
@@ -60,4 +60,7 @@ The questions are pretty simple:
 
 ## Things To Do
 
-- enable running go mod init and tidy to add the imports by default
+- clean up file formatting
+- add model support to clean up some errors
+- fix route-handler errors
+- add placeholder validation funcs

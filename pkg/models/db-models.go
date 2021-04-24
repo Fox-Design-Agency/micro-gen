@@ -7,9 +7,9 @@ import (
 )
 
 // ReturnDBLayer will return the byte slice of the generic db file
-func ReturnDBLayer(hasCrud bool, name string) ([]byte, error) {
+func ReturnDBLayer(hasCrud bool, name, projectName string) ([]byte, error) {
 	// top section
-	topString, err := returnTopDBFile()
+	topString, err := returnTopDBFile(projectName)
 	if err != nil {
 		// handle the err
 		log.Println(err)
@@ -32,12 +32,12 @@ func ReturnDBLayer(hasCrud bool, name string) ([]byte, error) {
 
 // returnTopDBFile will return the top section of the db layer files
 // including the package and import
-func returnTopDBFile() (string, error) {
-	return `package db
+func returnTopDBFile(pkgName string) (string, error) {
+	pkgStr := fmt.Sprintf("package db\n\n")
 
-	// import helpers
-	
-`, nil
+	helpersStr := fmt.Sprintf("import \"%s/pkg/helpers\"\n\n", pkgName)
+
+	return pkgStr + helpersStr, nil
 }
 
 // returnDBInterfaceDeclartion will return the comment block to declare

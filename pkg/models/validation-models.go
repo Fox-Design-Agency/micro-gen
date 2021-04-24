@@ -7,9 +7,9 @@ import (
 )
 
 // ReturnValidationLayer will return the byte slice of the generic validation file
-func ReturnValidationLayer(name string) ([]byte, error) {
+func ReturnValidationLayer(name, projectName string) ([]byte, error) {
 	// top section
-	topString, err := returnTopValidationFile()
+	topString, err := returnTopValidationFile(projectName)
 	if err != nil {
 		// handle the err
 		log.Println(err)
@@ -27,9 +27,12 @@ func ReturnValidationLayer(name string) ([]byte, error) {
 
 // returnTopValidationFile will return the string of the generic top
 // section of the validation layer file
-func returnTopValidationFile() (string, error) {
+func returnTopValidationFile(projectName string) (string, error) {
 	// @TODO will need to add imports????
-	topDeclaration := fmt.Sprintf("package validation\n\n")
+	topDeclaration := fmt.Sprintf("package validation\n\n") +
+		fmt.Sprintf("import (\n") +
+		fmt.Sprintf("	\"%s/pkg/db\"\n", projectName) +
+		fmt.Sprintf("	\"%s/pkg/models\"\n)\n\n", projectName)
 	// combine the sections to create the comment block
 	commentBlock := topCommentBlock +
 		fmt.Sprintf("\n/ Only Change this section if you are adding new features onto this.\n") +

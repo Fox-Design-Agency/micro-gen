@@ -8,9 +8,9 @@ import (
 
 // ReturnSubServiceLayer will return the byte slice of the generic SubService
 // layer file
-func ReturnSubServiceLayer(name string) ([]byte, error) {
+func ReturnSubServiceLayer(name, projectName string) ([]byte, error) {
 	// top section
-	topString, err := returnSubServiceTop(name)
+	topString, err := returnSubServiceTop(name, projectName)
 	if err != nil {
 		// handle err
 		log.Println(err)
@@ -27,9 +27,12 @@ func ReturnSubServiceLayer(name string) ([]byte, error) {
 
 // returnSubServiceTop will return the string of the top section of the
 // SubService file
-func returnSubServiceTop(name string) (string, error) {
+func returnSubServiceTop(name, projectName string) (string, error) {
 	// main service fun
 	topString := fmt.Sprintf("package services\n\n") +
+		fmt.Sprintf("import (\n") +
+		fmt.Sprintf("	\"%s/pkg/db\"\n", projectName) +
+		fmt.Sprintf("	\"%s/pkg/validation\"\n)\n\n", projectName) +
 		topCommentBlock +
 		fmt.Sprintf("\n/ Only Change this section if you are adding a new capability onto") +
 		fmt.Sprintf("\n/ this subservice. Adding any new capability may nessesitate a change") +

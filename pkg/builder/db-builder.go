@@ -8,9 +8,9 @@ import (
 )
 
 // initializeDBLayer will initialize the db layer for the subService
-func initializeDBLayer(hasCRUD bool, name string, projectName string) (err error) {
+func initializeDBLayer(hasCRUD bool, name, projectName string) (err error) {
 	// get the byte slice
-	b, _ := models.ReturnDBLayer(hasCRUD, name)
+	b, _ := models.ReturnDBLayer(hasCRUD, name, projectName)
 	// set the filename
 	fileName := fmt.Sprintf("/pkg/db/%s", name+"-db.go")
 	// write the file

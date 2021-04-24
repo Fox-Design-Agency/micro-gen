@@ -4,6 +4,7 @@ import (
 	"log"
 	"micro-gen/pkg/models"
 	"os"
+	"os/exec"
 	"strings"
 )
 
@@ -36,6 +37,14 @@ func IntializeBuild(answers *models.Questions) {
 	}
 
 	// should run go mod init here and save package name
+	wd, _ := os.Getwd()
+	os.Chdir(answers.ProjectName)
+	log.Println("running init")
+	cmd := exec.Command("go", "mod", "init", answers.ProjectName)
+	if err := cmd.Run(); err != nil {
+		log.Fatal(err)
+	}
+	os.Chdir(wd)
 
 	// if has helpers is enabled, then generate the generic helpers
 	if answers.HasHelpers {
@@ -117,7 +126,13 @@ func IntializeBuild(answers *models.Questions) {
 	}
 
 	// run go mod tidy here
-
+	os.Chdir(answers.ProjectName)
+	log.Println("running tidy")
+	cmd = exec.Command("go", "mod", "tidy")
+	if err := cmd.Run(); err != nil {
+		log.Fatal(err)
+	}
+	// end the thing
 	log.Println("Ending Build")
 }
 

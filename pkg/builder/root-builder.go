@@ -44,9 +44,21 @@ func initializeRootFolders(projectName string, hasDB bool) (err error) {
 		os.Exit(1)
 	}
 
+	// ensure that the resources folder exists
+	err = os.Mkdir(projectName+"/resources", 0755)
+	if err != nil {
+		log.Println(err)
+		os.Exit(1)
+	}
 	// if has DB, then build db migrations
 	if hasDB {
 		initializeMigrations(projectName)
+	}
+	// build postman
+	err = os.Mkdir(projectName+"/resources/postman", 0755)
+	if err != nil {
+		log.Println(err)
+		os.Exit(1)
 	}
 	return nil
 }
@@ -89,14 +101,8 @@ func initializeRootFiles(answers *models.Questions) (err error) {
 // placeholder for DB migration files
 // creates:
 // - 001_seed.sql
-// - 001_seed_func.sql
+// - 002_seed_func.sql
 func initializeMigrations(projectName string) (err error) {
-	// ensure that the resources folder exists
-	err = os.Mkdir(projectName+"/resources", 0755)
-	if err != nil {
-		log.Println(err)
-		os.Exit(1)
-	}
 	// ensure that the migrations folder exists
 	err = os.Mkdir(projectName+"/resources/migrations", 0755)
 	if err != nil {
@@ -113,7 +119,7 @@ func initializeMigrations(projectName string) (err error) {
 
 	// create a blank 001 seed func file
 	b2, _ := models.ReturnMigrationSeedFile()
-	err = ioutil.WriteFile(projectName+"/resources/migrations/001_seed_func.sql", b2, 0755)
+	err = ioutil.WriteFile(projectName+"/resources/migrations/002_seed_func.sql", b2, 0755)
 	if err != nil {
 		log.Fatal(err)
 	}

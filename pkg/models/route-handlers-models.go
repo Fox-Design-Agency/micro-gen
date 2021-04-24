@@ -6,9 +6,9 @@ import (
 )
 
 // ReturnRouteHandlerLayer will return the byte slice of the route handler layer for the selected service
-func ReturnRouteHandlerLayer(name string, hasCRUD bool) ([]byte, error) {
+func ReturnRouteHandlerLayer(name, projectName string, hasCRUD bool) ([]byte, error) {
 	// call top
-	topString, err := returnRouteHandlerTop(name)
+	topString, err := returnRouteHandlerTop(name, projectName)
 	if err != nil {
 		// handle err
 	}
@@ -24,8 +24,12 @@ func ReturnRouteHandlerLayer(name string, hasCRUD bool) ([]byte, error) {
 
 // returnRouteHandlerTop will return the top section for the
 // route handlers layer
-func returnRouteHandlerTop(name string) (string, error) {
+func returnRouteHandlerTop(name, projectName string) (string, error) {
 	topString := fmt.Sprintf("package routeHandlers\n\n") +
+		fmt.Sprintf("import (\n") +
+		fmt.Sprintf("	\"%s/pkg/helpers\"\n", projectName) +
+		fmt.Sprintf("	services \"%s/pkg/sub-services\"\n", projectName) +
+		fmt.Sprintf("	\"net/http\"\n)\n\n") +
 		topCommentBlock +
 		fmt.Sprintf("\n/ Only Change this section if you are adding a new subservice onto") +
 		fmt.Sprintf("\n/ this service. Adding any new subservice will nessesitate a change") +

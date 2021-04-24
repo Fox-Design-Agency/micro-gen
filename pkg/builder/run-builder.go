@@ -31,7 +31,7 @@ func initializeRun(projectName string, serviceArray []string, hasDB bool) (err e
 // the required items within the file
 func initializeMainFile(projectName string, serviceArray []string, hasDB bool) (err error) {
 	// get the byte slice
-	b, _ := models.ReturnMainFile(serviceArray, hasDB)
+	b, _ := models.ReturnMainFile(serviceArray, hasDB, projectName)
 	// set the filename
 	fileName := fmt.Sprintf("/run/main.go")
 	// write the file

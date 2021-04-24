@@ -11,7 +11,7 @@ import (
 // subService
 func intializeSubServiceRouteHandler(srvc *models.SubService, projectName string) (err error) {
 	// get the byte slice
-	b, _ := models.ReturnRouteHandlerLayer(srvc.SubServiceName, srvc.HasCRUD)
+	b, _ := models.ReturnRouteHandlerLayer(srvc.SubServiceName, projectName, srvc.HasCRUD)
 	// set the filename
 	fileName := fmt.Sprintf("/pkg/route-handlers/%s", srvc.SubServiceName+".go")
 	// write the file

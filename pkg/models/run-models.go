@@ -7,9 +7,9 @@ import (
 )
 
 // ReturnMainFile will return the string for the main.go file
-func ReturnMainFile(serviceArray []string, hasDB bool) ([]byte, error) {
+func ReturnMainFile(serviceArray []string, hasDB bool, projectName string) ([]byte, error) {
 	// top + init
-	topString, err := returnMainTopSection()
+	topString, err := returnMainTopSection(projectName)
 	if err != nil {
 		// handle err
 		log.Println(err)
@@ -62,9 +62,11 @@ func ReturnMainFile(serviceArray []string, hasDB bool) ([]byte, error) {
 
 // returnMainTopSection will return the string for the package, imports
 // and init section of the main.go file
-func returnMainTopSection() (string, error) {
+func returnMainTopSection(projectName string) (string, error) {
 	topString := fmt.Sprintf("package main\n\n") +
 		fmt.Sprintf("import (\n") +
+		fmt.Sprintf("	routeHandlers \"%s/pkg/route-handlers\"", projectName) +
+		fmt.Sprintf("	services \"%s/pkg/sub-services\"\n\n", projectName) +
 		fmt.Sprintf("	\"fmt\"\n") +
 		fmt.Sprintf("	\"log\"\n") +
 		fmt.Sprintf("	\"net/http\"\n") +

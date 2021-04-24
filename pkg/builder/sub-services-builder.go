@@ -27,7 +27,7 @@ func initializeServicesFile(serviceArray []string, projectName string, hasDB boo
 // the desired subService in the services folder
 func initializeSubServiceService(name, projectName string) (err error) {
 	// get the byte slice
-	b, _ := models.ReturnSubServiceLayer(name)
+	b, _ := models.ReturnSubServiceLayer(name, projectName)
 	// set the filename
 	fileName := fmt.Sprintf("/pkg/sub-services/%s", name+"-service.go")
 	// write the file

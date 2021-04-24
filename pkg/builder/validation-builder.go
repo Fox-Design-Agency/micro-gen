@@ -11,7 +11,7 @@ import (
 // for the desired subService
 func initializeValidationLayer(name, projectName string) (err error) {
 	// get the byte slice
-	b, _ := models.ReturnValidationLayer(name)
+	b, _ := models.ReturnValidationLayer(name, projectName)
 	// set the filename
 	fileName := fmt.Sprintf("/pkg/validation/%s", name+"-validator.go")
 	// write the file
