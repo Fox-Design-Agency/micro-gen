@@ -7,8 +7,8 @@ import (
 	"github.com/manifoldco/promptui"
 )
 
-// runStringPrompt prompts for a string value and returns the string result
-func runStringPrompt(question string, label string) (string, error) {
+// RunStringPrompt prompts for a string value and returns the string result
+func RunStringPrompt(question string, label string) (string, error) {
 	log.Println(question)
 	prompt := promptui.Prompt{
 		Label: label,
@@ -25,8 +25,8 @@ func runStringPrompt(question string, label string) (string, error) {
 	return result, nil
 }
 
-// runNumberPrompt prompts for a number value and returns the int64 result
-func runNumberPrompt(question string, label string) (int64, error) {
+// RunNumberPrompt prompts for a number value and returns the int64 result
+func RunNumberPrompt(question string, label string) (int64, error) {
 	log.Println(question)
 	prompt := promptui.Prompt{
 		Label: label,
@@ -47,10 +47,10 @@ func runNumberPrompt(question string, label string) (int64, error) {
 	return res, nil
 }
 
-// runBoolPrompt prompts for a yes or no and returns the bool equivilant
+// RunBoolPrompt prompts for a yes or no and returns the bool equivilant
 // yes -> TRUE
 // no -> FALSE
-func runBoolPrompt(question string, label string, items []string) (bool, error) {
+func RunBoolPrompt(question string, label string, items []string) (bool, error) {
 	log.Println(question)
 	prompt := promptui.Select{
 		Label: label,

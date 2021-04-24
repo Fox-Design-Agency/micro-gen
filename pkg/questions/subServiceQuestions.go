@@ -11,7 +11,7 @@ import (
 // be set into a subsrvice array that will be passed to the builder.
 func IntializeSubServiceQuestions(subStruct *models.SubService, hasDB bool) error {
 	// Set Subservice name
-	stringResult, err := runStringPrompt("What is the name of the sub service?", "SubService Name")
+	stringResult, err := RunStringPrompt("What is the name of the sub service?", "SubService Name")
 	if err != nil {
 		log.Println("Prompt failed")
 		os.Exit(1)
@@ -21,7 +21,7 @@ func IntializeSubServiceQuestions(subStruct *models.SubService, hasDB bool) erro
 	// if the microsrvice has a DB, check if the subservice requires a DB layer
 	if hasDB {
 		// Has DB
-		boolResult, err := runBoolPrompt("Does this sub service need a DB layer?", "Has DB", []string{"Yes", "No"})
+		boolResult, err := RunBoolPrompt("Does this sub service need a DB layer?", "Has DB", []string{"Yes", "No"})
 		if err != nil {
 			log.Println("Prompt failed")
 			os.Exit(1)
@@ -30,7 +30,7 @@ func IntializeSubServiceQuestions(subStruct *models.SubService, hasDB bool) erro
 
 		// if subservice has db, then should it intialize crud?
 		if subStruct.HasDB {
-			boolResult, err := runBoolPrompt("Does DB layer need CRUD?", "Needs CRUD", []string{"Yes", "No"})
+			boolResult, err := RunBoolPrompt("Does DB layer need CRUD?", "Needs CRUD", []string{"Yes", "No"})
 			if err != nil {
 				log.Println("Prompt failed")
 				os.Exit(1)

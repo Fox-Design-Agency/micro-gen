@@ -1,11 +1,10 @@
 package main
 
 import (
-	"os"
-
 	"micro-gen/pkg/builder"
 	"micro-gen/pkg/models"
 	"micro-gen/pkg/questions"
+	"os"
 )
 
 func init() {
@@ -25,6 +24,5 @@ func main() {
 	// utlize answers to pass to the builder
 	builder.IntializeBuild(&answers)
 
-	// safety exit
 	os.Exit(1)
 }
