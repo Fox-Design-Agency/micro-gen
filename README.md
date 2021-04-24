@@ -5,6 +5,7 @@ There are a number of issues with this project and it is not ready for complete 
 ## Table of Contents
 
 - [Overview](#overview)
+- [How to install](#how-to-install)
 - [How to Plan](#how-to-plan)
 - [Things To Do](#things-to-do)
 
@@ -30,31 +31,17 @@ This is a very simple microservice genrator that creates the following folder an
 - Dockerfile
 - README
 
-This template will be created in the run folder currently, but this will change soon.
-Once the project is created, move it to where you would like, then navigate in the
-terminal to the project and go to the root, then go ahead and run:
+## How to Install
+
+Right now, the easiest eay to install this thing is to clone the repo locally and run a go install from the root.
+
+From the command line, you should be able to then run:
 
 ```
-go mod init <micro service name>
+micro-gen
 ```
 
-After that, run:
-
-```
-go mod init <micro service name>
-```
-
-Once those have been run, you will need to manualy:
-
-- update the imports in the files
-- add the models to make validation happy
-- add in actual info into the secretStuff.go file
-
-You should be good to go then with the basic pattern, just navigate to the /run folder of the project and run:
-
-```
-go run .
-```
+and the questions will initiate. This process will start to change in the near future.
 
 ## How to Plan
 
@@ -74,6 +61,3 @@ The questions are pretty simple:
 ## Things To Do
 
 - enable running go mod init and tidy to add the imports by default
-- add cli capability so this can be called globally from command line
-- change the template write path to be not in run, but this should be done after the thing above
-- tons more, but the top three need to be completed before any other sections can

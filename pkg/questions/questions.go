@@ -14,7 +14,7 @@ func IntializeQuestions(answers *models.Questions) {
 	log.Println("This generator will ask a series of questions and generate the template structure files")
 
 	// set project name
-	stringResult, err := RunStringPrompt("What is the name of your project?", "Project Name")
+	stringResult, err := runStringPrompt("What is the name of your project?", "Project Name")
 	if err != nil {
 		log.Println("Prompt failed")
 		os.Exit(1)
@@ -22,7 +22,7 @@ func IntializeQuestions(answers *models.Questions) {
 	answers.ProjectName = stringResult
 
 	// check if should initialize with generic helpers
-	boolResult, err := RunBoolPrompt("Initialize generic helpers?", "Create Helpers", []string{"Yes", "No"})
+	boolResult, err := runBoolPrompt("Initialize generic helpers?", "Create Helpers", []string{"Yes", "No"})
 	if err != nil {
 		log.Println("Prompt failed")
 		os.Exit(1)
@@ -38,7 +38,7 @@ func IntializeQuestions(answers *models.Questions) {
 	// answers.IsCLI = boolResult
 
 	// check if has DB
-	boolResult, err = RunBoolPrompt("Does this have a DB?", "Has DB", []string{"Yes", "No"})
+	boolResult, err = runBoolPrompt("Does this have a DB?", "Has DB", []string{"Yes", "No"})
 	if err != nil {
 		log.Println("Prompt failed")
 		os.Exit(1)
@@ -46,7 +46,7 @@ func IntializeQuestions(answers *models.Questions) {
 	answers.HasDB = boolResult
 
 	// query number of services
-	int64Result, err := RunNumberPrompt("How many SubServices are in the project?", "SubService Count")
+	int64Result, err := runNumberPrompt("How many SubServices are in the project?", "SubService Count")
 	if err != nil {
 		log.Println("Prompt failed")
 		os.Exit(1)
