@@ -8,9 +8,9 @@ import (
 )
 
 // initializeRun will initialize the files within the run folder
-func initializeRun(projectName string, serviceArray []string, hasDB bool) (err error) {
+func initializeRun(projectName string, serviceArray, routeHandlerArray []string, hasDB bool) (err error) {
 
-	err = initializeMainFile(projectName, serviceArray, hasDB)
+	err = initializeMainFile(projectName, serviceArray, routeHandlerArray, hasDB)
 	if err != nil {
 		//handle err
 	}
@@ -29,9 +29,9 @@ func initializeRun(projectName string, serviceArray []string, hasDB bool) (err e
 
 // initializeMainFile will initialize the main.go file and write
 // the required items within the file
-func initializeMainFile(projectName string, serviceArray []string, hasDB bool) (err error) {
+func initializeMainFile(projectName string, serviceArray, routeHandlerArray []string, hasDB bool) (err error) {
 	// get the byte slice
-	b, _ := runModels.ReturnMainFile("go", serviceArray, hasDB, projectName)
+	b, _ := runModels.ReturnMainFile("go", serviceArray, routeHandlerArray, hasDB, projectName)
 	// set the filename
 	fileName := fmt.Sprintf("/run/main.go")
 	// write the file

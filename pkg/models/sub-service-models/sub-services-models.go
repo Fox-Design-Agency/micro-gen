@@ -6,17 +6,17 @@ import (
 
 // ReturnSubServiceLayer will return the byte slice of the generic SubService
 // layer file
-func ReturnSubServiceLayer(microType, name, projectName string) ([]byte, error) {
+func ReturnSubServiceLayer(microType, name, projectName string, hasDB bool) ([]byte, error) {
 	switch microType {
 	case "go":
 		// top section
-		topString, err := returnGoSubServiceTop(name, projectName)
+		topString, err := returnGoSubServiceTop(name, projectName, hasDB)
 		if err != nil {
 			// handle err
 			log.Println(err)
 		}
 		// definition section
-		definitionString, err := returnGoSubServiceSvcDefinition(name)
+		definitionString, err := returnGoSubServiceSvcDefinition(name, hasDB)
 		if err != nil {
 			// handle err
 			log.Println(err)

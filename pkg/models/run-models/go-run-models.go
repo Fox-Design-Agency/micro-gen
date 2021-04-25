@@ -17,7 +17,7 @@ import (
 func returnGoMainTopSection(projectName string) (string, error) {
 	topString := fmt.Sprintf("package main\n\n") +
 		fmt.Sprintf("import (\n") +
-		fmt.Sprintf("	routeHandlers \"%s/pkg/route-handlers\"", projectName) +
+		fmt.Sprintf("	routeHandlers \"%s/pkg/route-handlers\"\n", projectName) +
 		fmt.Sprintf("	services \"%s/pkg/sub-services\"\n\n", projectName) +
 		fmt.Sprintf("	\"fmt\"\n") +
 		fmt.Sprintf("	\"log\"\n") +
@@ -76,14 +76,14 @@ func returnGoMainConfigurationSection(hasDB bool, serviceArray []string) (string
 
 // returnGoMainRouterSection will return the string for the router
 // section of the main.go file
-func returnGoMainRouterSection(hasDB bool, serviceArray []string) (string, error) {
+func returnGoMainRouterSection(hasDB bool, routeHandler []string) (string, error) {
 	topString := models.TopCommentBlock +
 		fmt.Sprintf("\n/	Initialize router and controllers\n") +
 		models.BottomCommentBlock +
 		fmt.Sprintf("\n\n	r := mux.NewRouter()\n\n")
-	for _, v := range serviceArray {
+	for _, v := range routeHandler {
 		topString += fmt.Sprintf("	%sRH := routeHandlers.New%s(\n", strings.ToLower(v), strings.Title(v)) +
-			fmt.Sprintf("	srvcs.%s\n	)\n", strings.Title(v))
+			fmt.Sprintf("		srvcs.%s,\n	)\n", strings.Title(v))
 	}
 	topString += fmt.Sprintf("\n")
 
@@ -114,13 +114,14 @@ func returnGoMainHealthSection() (string, error) {
 
 // returnGoMainRoutesSection will return the string for the routes
 // section of the main.go file
-func returnGoMainRoutesSection(hasDB bool, serviceArray []string) (string, error) {
+func returnGoMainRoutesSection(hasDB bool, routeHandlerArray []string) (string, error) {
 	topString := ""
-	for _, v := range serviceArray {
+	for _, v := range routeHandlerArray {
 		topString += models.TopCommentBlock +
 			fmt.Sprintf("\n/	%s routes\n", strings.Title(v)) +
 			models.BottomCommentBlock +
-			fmt.Sprintf("\n")
+			fmt.Sprintf("\n\n") +
+			fmt.Sprintf("	// r.HandleFunc(\"/route-path\", routeHandler.routeMethod).Methods(\"GET\")\n\n")
 	}
 
 	return topString, nil

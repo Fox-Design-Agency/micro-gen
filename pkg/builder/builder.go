@@ -64,6 +64,7 @@ func IntializeBuild(answers *models.Questions) {
 
 	// temp serviceArray holder to manage service creation in the main
 	tempServiceArray := []string{}
+	routeHandlerArray := []string{}
 
 	// iter on services to populate pkg
 	for _, v := range answers.SubServices {
@@ -87,30 +88,28 @@ func IntializeBuild(answers *models.Questions) {
 				// TODO handle error better
 			}
 
-			// Create service layer for interface chaining
-			err = initializeSubServiceService(v.SubServiceName, answers.ProjectName)
-			if err != nil {
-				// TODO handle error better
-			}
+		}
+
+		// Create service layer for potential interface chaining
+		err = initializeSubServiceService(v.SubServiceName, answers.ProjectName, v.HasDB)
+		if err != nil {
+			// TODO handle error better
+		}
+		// slot into services array for service population
+		subServiceName := strings.Join(strings.Fields(strings.TrimSpace(v.SubServiceName)), "")
+		tempServiceArray = append(tempServiceArray, subServiceName)
+
+		if v.HasRouteHandler {
 
 			// slot into services array for service population
-			subServiceName := strings.Join(strings.Fields(strings.TrimSpace(v.SubServiceName)), "")
-			tempServiceArray = append(tempServiceArray, subServiceName)
+			routeHandlerArray = append(routeHandlerArray, subServiceName)
 
-		}
-		if v.HasRouteHandler {
 			// create subService route handler
 			err = intializeSubServiceRouteHandler(v, answers.ProjectName, answers.HasHelpers)
 			if err != nil {
 				// TODO handle error better
 			}
 		}
-	}
-
-	// @TODO REMOVE
-	// just to check the service array
-	for _, v := range tempServiceArray {
-		log.Println(v)
 	}
 
 	// iter on services array for service population
@@ -120,7 +119,7 @@ func IntializeBuild(answers *models.Questions) {
 	}
 
 	// create run
-	err = initializeRun(answers.ProjectName, tempServiceArray, answers.HasDB)
+	err = initializeRun(answers.ProjectName, tempServiceArray, routeHandlerArray, answers.HasDB)
 	if err != nil {
 		// TODO handle error better
 	}

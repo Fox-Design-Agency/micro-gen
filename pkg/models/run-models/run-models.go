@@ -5,7 +5,7 @@ import (
 )
 
 // ReturnMainFile will return the string for the main.go file
-func ReturnMainFile(microType string, serviceArray []string, hasDB bool, projectName string) ([]byte, error) {
+func ReturnMainFile(microType string, serviceArray, routeHandlerArray []string, hasDB bool, projectName string) ([]byte, error) {
 	switch microType {
 	case "go":
 		// top + init
@@ -21,7 +21,7 @@ func ReturnMainFile(microType string, serviceArray []string, hasDB bool, project
 			log.Println(err)
 		}
 		// initialize router and router handlers
-		routerString, err := returnGoMainRouterSection(hasDB, serviceArray)
+		routerString, err := returnGoMainRouterSection(hasDB, routeHandlerArray)
 		if err != nil {
 			// handle err
 			log.Println(err)
@@ -39,7 +39,7 @@ func ReturnMainFile(microType string, serviceArray []string, hasDB bool, project
 			log.Println(err)
 		}
 		// routes
-		routesString, err := returnGoMainRoutesSection(hasDB, serviceArray)
+		routesString, err := returnGoMainRoutesSection(hasDB, routeHandlerArray)
 		if err != nil {
 			// handle err
 			log.Println(err)

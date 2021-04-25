@@ -63,7 +63,7 @@ func returnGoRouteHandlerMethods(name, modelName string, hasCRUD, hasHelpers boo
 			fmt.Sprintf("		// send error msg\n") +
 			fmt.Sprintf("		return\n	}\n\n") +
 			fmt.Sprintf("	// Call DB layer \n") +
-			fmt.Sprintf("	if err := rh.ss.Create%s(form); err != nil {\n", strings.Title(name)) +
+			fmt.Sprintf("	if err := rh.ss.Create%s(&form); err != nil {\n", strings.Title(name)) +
 			fmt.Sprintf("		// Handle Error \n") +
 			fmt.Sprintf("		helpers.SendErrorHeader(w, 500, nil)\n") +
 			fmt.Sprintf("		return\n") +

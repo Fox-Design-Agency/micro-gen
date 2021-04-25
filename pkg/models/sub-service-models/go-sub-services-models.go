@@ -14,12 +14,17 @@ import (
 
 // returnGoSubServiceTop will return the string of the top section of the
 // SubService file
-func returnGoSubServiceTop(name, projectName string) (string, error) {
+func returnGoSubServiceTop(name, projectName string, hasDB bool) (string, error) {
 	// main service fun
 	topString := fmt.Sprintf("package services\n\n") +
-		fmt.Sprintf("import (\n") +
-		fmt.Sprintf("	\"%s/pkg/db\"\n", projectName) +
-		fmt.Sprintf("	\"%s/pkg/validation\"\n)\n\n", projectName) +
+		fmt.Sprintf("import (\n")
+
+	if hasDB {
+		topString += fmt.Sprintf("	\"%s/pkg/db\"\n", projectName) +
+			fmt.Sprintf("	\"%s/pkg/validation\"\n", projectName)
+	}
+
+	topString += fmt.Sprintf(")\n\n") +
 		models.TopCommentBlock +
 		fmt.Sprintf("\n/ Only Change this section if you are adding a new capability onto") +
 		fmt.Sprintf("\n/ this subservice. Adding any new capability may nessesitate a change") +
@@ -27,28 +32,42 @@ func returnGoSubServiceTop(name, projectName string) (string, error) {
 		fmt.Sprintf("\n/ If you do not understand what is happening here, look into") +
 		fmt.Sprintf("\n/ Interface Chaining. \n") +
 		models.BottomCommentBlock
+
 	return topString, nil
 }
 
 // returnGoSubServiceSvcDefinition will return the string of the service
 // definition for the subService
-func returnGoSubServiceSvcDefinition(name string) (string, error) {
+func returnGoSubServiceSvcDefinition(name string, hasDB bool) (string, error) {
 	// service types
 	srvcDefinitionString := fmt.Sprintf("\n\n // New%s loads related SQL statements and initializes the container struct\n", strings.Title(name)+"Service") +
-		fmt.Sprintf("func New%s(s *Services) %s {\n", strings.Title(name)+"Service", strings.Title(name)+"Service") +
-		fmt.Sprintf("	// create initial interface \n") +
-		fmt.Sprintf("	ctx := &db.%s{}\n", strings.Title(name)+"StructDB") +
-		fmt.Sprintf("	ctx.DB = s.db \n") +
-		fmt.Sprintf("	srvc := &%s{}\n", strings.ToLower(name)+"Service") +
-		fmt.Sprintf("	srvc.I%s = &validation.%s{I%s: ctx}\n", strings.Title(name)+"DB", strings.Title(name)+"Validator", strings.Title(name)+"DB") +
-		fmt.Sprintf("	return srvc\n }\n\n") +
+		fmt.Sprintf("func New%s(s *Services) %s {\n", strings.Title(name)+"Service", strings.Title(name)+"Service")
+
+	if hasDB {
+		srvcDefinitionString += fmt.Sprintf("	// create initial interface \n") +
+			fmt.Sprintf("	ctx := &db.%s{}\n", strings.Title(name)+"StructDB") +
+			fmt.Sprintf("	ctx.DB = s.db \n")
+	}
+
+	srvcDefinitionString += fmt.Sprintf("	srvc := &%s{}\n", strings.ToLower(name)+"Service")
+
+	if hasDB {
+		srvcDefinitionString += fmt.Sprintf("	srvc.I%s = &validation.%s{I%s: ctx}\n", strings.Title(name)+"DB", strings.Title(name)+"Validator", strings.Title(name)+"DB")
+	}
+	srvcDefinitionString += fmt.Sprintf("	return srvc\n }\n\n") +
 		// interface type
 		fmt.Sprintf("// %s is a wrapper for related components\n", strings.Title(name)+"Services") +
-		fmt.Sprintf("type %s interface {\n", strings.Title(name)+"Service") +
-		fmt.Sprintf("	db.I%s\n}\n\n", strings.Title(name)+"DB") +
+		fmt.Sprintf("type %s interface {\n", strings.Title(name)+"Service")
+	if hasDB {
+		srvcDefinitionString += fmt.Sprintf("	db.I%s\n", strings.Title(name)+"DB")
+	}
+	srvcDefinitionString += fmt.Sprintf("}\n\n") +
 		// struct type
-		fmt.Sprintf("type %s struct {\n", strings.ToLower(name)+"Service") +
-		fmt.Sprintf("	db.I%s\n}\n", strings.Title(name)+"DB")
+		fmt.Sprintf("type %s struct {\n", strings.ToLower(name)+"Service")
+	if hasDB {
+		srvcDefinitionString += fmt.Sprintf("	db.I%s\n", strings.Title(name)+"DB")
+	}
+	srvcDefinitionString += fmt.Sprintf("}\n")
 
 	return srvcDefinitionString, nil
 }
