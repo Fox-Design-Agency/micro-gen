@@ -1,8 +1,8 @@
-package models
+package helpers
 
-// ReturnDBHelpers will return the file to create the db struct
+// ReturnGoDBHelpers will return the file to create the db struct
 // that is utilized by the services for interface chaining
-func ReturnDBHelpers() ([]byte, error) {
+func ReturnGoDBHelpers() ([]byte, error) {
 	return []byte(`package helpers
 
 import (
@@ -21,9 +21,9 @@ type DBContext struct {
 }`), nil
 }
 
-// ReturnResponseHelpers will return the generic response
+// ReturnGoResponseHelpers will return the generic response
 // files that are utilized by the controllers
-func ReturnResponseHelpers() ([]byte, error) {
+func ReturnGoResponseHelpers() ([]byte, error) {
 	return []byte(`package helpers
 
 import (

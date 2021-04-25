@@ -11,20 +11,22 @@ This project is likely nearing capability for general use with Golang microservi
 
 ## Overview
 
-This is a very simple microservice genrator that creates the following folder and file structure:
+This is a very simple microservice generator that creates the following folder and file structure:
 
-- migrations - placeholder folder to place DB migrations
 - pkg - holder folder for most to all of the actual logic
   - db (if db enabled) - holder folder for the database layer for the microservice
-  - helpers (if helpers enabled) - holder folder for helper related items, intialized generic success and error http sends
+  - helpers (if helpers enabled) - holder folder for helper related items, initialized generic success and error http sends
   - middleware - holder folder to place middleware into, currently none are generated
   - models - holder folder for all structs or models
   - route-handlers - holder folder for all route-handlers, which are the contract between the main.go declarations and sub services
   - sub-services - holder folder for initialization logic for sub services within the micro service
   - validation - holder folder for the validation layer that sits on top of the db layer
+- resources - holder folder for microservice related resources
+  - migrations - placeholder folder to place DB migrations
+  - postman - placeholder folder to place postman routes
 - run - holder folder for all run related tasks
   - config.go - file for db configuration, currently on Postgres supported
-  - main.go - file where the server intialization and routes are declared
+  - main.go - file where the server initialization and routes are declared
   - secretStuff.go - placeholder to inject env vars while in dev
 - .dockerignore
 - .gitignore
@@ -33,7 +35,7 @@ This is a very simple microservice genrator that creates the following folder an
 
 ## How to Install
 
-Right now, the easiest eay to install this thing is to clone the repo locally and run a go install from the root.
+Right now, the easiest way to install this thing is to clone the repo locally and run a go install from the root.
 
 From the command line, you should be able to then run:
 
@@ -53,7 +55,7 @@ The questions are pretty simple:
 - Do you want helpers?
   - this will generate the generic files that assist with microservice responses
 - How Many subservices?
-  - this project breaks up the microservice into small sub services that try to focus on a single element, sometimes the subdivision here works out well where the DB dictates how many sub services there will be. Route Handlers can inherit as many sub services as you want, so just plan ahead and divide correcly, else your files will likely become unmanagable.
+  - this project breaks up the microservice into small sub services that try to focus on a single element, sometimes the subdivision here works out well where the DB dictates how many sub services there will be. Route Handlers can inherit as many sub services as you want, so just plan ahead and divide correctly, else your files will likely become unmanageable.
 - sub services questions
   - if you need a db layer and crud are the main considerations to think about for sub services.
   - the db layer will also gen a validation layer that is currently difficult to hook up, more template comments will be added in the future.
@@ -64,3 +66,5 @@ The questions are pretty simple:
 - add model support to clean up some errors
 - fix route-handler errors
 - add placeholder validation funcs
+- change most of the models in pkg to be constructors?
+- finish implementation for initial go support where other languages can be added easily

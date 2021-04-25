@@ -1,40 +1,24 @@
-package models
+package routeHandlers
 
 import (
 	"fmt"
+	models "micro-gen/pkg/shared/models"
 	"strings"
 )
 
-// ReturnRouteHandlerLayer will return the byte slice of the route handler layer for the selected service
-func ReturnRouteHandlerLayer(name, projectName string, hasCRUD bool) ([]byte, error) {
-	// call top
-	topString, err := returnRouteHandlerTop(name, projectName)
-	if err != nil {
-		// handle err
-	}
-
-	// call methods section
-	methodsString, err := returnRouteHandlerMethods(name, hasCRUD)
-	if err != nil {
-		// handle err
-	}
-
-	return []byte(topString + methodsString), nil
-}
-
-// returnRouteHandlerTop will return the top section for the
+// returnGoRouteHandlerTop will return the top section for the
 // route handlers layer
-func returnRouteHandlerTop(name, projectName string) (string, error) {
+func returnGoRouteHandlerTop(name, projectName string) (string, error) {
 	topString := fmt.Sprintf("package routeHandlers\n\n") +
 		fmt.Sprintf("import (\n") +
 		fmt.Sprintf("	\"%s/pkg/helpers\"\n", projectName) +
 		fmt.Sprintf("	services \"%s/pkg/sub-services\"\n", projectName) +
 		fmt.Sprintf("	\"net/http\"\n)\n\n") +
-		topCommentBlock +
+		models.TopCommentBlock +
 		fmt.Sprintf("\n/ Only Change this section if you are adding a new subservice onto") +
 		fmt.Sprintf("\n/ this service. Adding any new subservice will nessesitate a change") +
 		fmt.Sprintf("\n/ in the main.go route-handler declaration found in run/main.go\n") +
-		bottomCommentBlock
+		models.BottomCommentBlock
 
 	newStructDeclaration := fmt.Sprintf("\n\n// %s is a func that created a new %s struct.", "New"+strings.Title(name), strings.Title(name)) +
 		fmt.Sprintf("\n// The %s struct requires:", strings.Title(name)) +
@@ -54,14 +38,14 @@ func returnRouteHandlerTop(name, projectName string) (string, error) {
 	return topString + newStructDeclaration + structDeclaration, nil
 }
 
-// returnRouteHandlerMethods will return the string for the method
+// returnGoRouteHandlerMethods will return the string for the method
 // section definitions
-func returnRouteHandlerMethods(name string, hasCRUD bool) (string, error) {
+func returnGoRouteHandlerMethods(name string, hasCRUD bool) (string, error) {
 
-	methodBlock := topCommentBlock +
+	methodBlock := models.TopCommentBlock +
 		fmt.Sprintf("\n/	Add new methods onto %s that can be accessed through the %s\n", strings.Title(name), strings.ToLower(name)) +
 		fmt.Sprintf("/ 	route-handler.\n") +
-		bottomCommentBlock
+		models.BottomCommentBlock
 
 	if hasCRUD {
 		// Create

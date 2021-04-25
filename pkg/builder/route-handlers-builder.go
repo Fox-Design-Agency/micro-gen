@@ -4,14 +4,15 @@ import (
 	"fmt"
 	"io/ioutil"
 	"log"
-	"micro-gen/pkg/models"
+	routeHandlerModels "micro-gen/pkg/models/route-handlers-models"
+	models "micro-gen/pkg/shared/models"
 )
 
 // intializeSubServiceRouteHandler will intiialize the route-handler file for the
 // subService
 func intializeSubServiceRouteHandler(srvc *models.SubService, projectName string) (err error) {
 	// get the byte slice
-	b, _ := models.ReturnRouteHandlerLayer(srvc.SubServiceName, projectName, srvc.HasCRUD)
+	b, _ := routeHandlerModels.ReturnRouteHandlerLayer("go", srvc.SubServiceName, projectName, srvc.HasCRUD)
 	// set the filename
 	fileName := fmt.Sprintf("/pkg/route-handlers/%s", srvc.SubServiceName+".go")
 	// write the file

@@ -4,7 +4,7 @@ import (
 	"fmt"
 	"io/ioutil"
 	"log"
-	"micro-gen/pkg/models"
+	runModels "micro-gen/pkg/models/run-models"
 )
 
 // initializeRun will initialize the files within the run folder
@@ -31,7 +31,7 @@ func initializeRun(projectName string, serviceArray []string, hasDB bool) (err e
 // the required items within the file
 func initializeMainFile(projectName string, serviceArray []string, hasDB bool) (err error) {
 	// get the byte slice
-	b, _ := models.ReturnMainFile(serviceArray, hasDB, projectName)
+	b, _ := runModels.ReturnMainFile("go", serviceArray, hasDB, projectName)
 	// set the filename
 	fileName := fmt.Sprintf("/run/main.go")
 	// write the file
@@ -47,7 +47,7 @@ func initializeMainFile(projectName string, serviceArray []string, hasDB bool) (
 // the required configurations within the file
 func initializeConfigFile(projectName string) (err error) {
 	// get the byte slice
-	b, _ := models.ReturnConfigFile()
+	b, _ := runModels.ReturnConfigFile("go")
 	// set the filename
 	fileName := fmt.Sprintf("/run/config.go")
 	// write the file
@@ -63,7 +63,7 @@ func initializeConfigFile(projectName string) (err error) {
 // the required configurations within the file
 func initializeSecretFile(projectName string) (err error) {
 	// get the byte slice
-	b, _ := models.ReturnSecretStuffFile()
+	b, _ := runModels.ReturnSecretStuffFile("go")
 	// set the filename
 	fileName := fmt.Sprintf("/run/secretStuff.go")
 	// write the file

@@ -2,7 +2,7 @@ package questions
 
 import (
 	"log"
-	"micro-gen/pkg/models"
+	models "micro-gen/pkg/shared/models"
 	"os"
 )
 

@@ -4,14 +4,14 @@ import (
 	"fmt"
 	"io/ioutil"
 	"log"
-	"micro-gen/pkg/models"
+	subserviceModels "micro-gen/pkg/models/sub-service-models"
 )
 
 // initializeServicesFile will initialize the services.go file to hold all
 // subService information
 func initializeServicesFile(serviceArray []string, projectName string, hasDB bool) (err error) {
 	// get the byte slice
-	b, _ := models.ReturnSubServiceServiceFile(serviceArray, hasDB)
+	b, _ := subserviceModels.ReturnSubServiceServiceFile(serviceArray, hasDB)
 	// set the filename
 	fileName := fmt.Sprintf("/pkg/sub-services/services.go")
 	// write the file
@@ -27,7 +27,7 @@ func initializeServicesFile(serviceArray []string, projectName string, hasDB boo
 // the desired subService in the services folder
 func initializeSubServiceService(name, projectName string) (err error) {
 	// get the byte slice
-	b, _ := models.ReturnSubServiceLayer(name, projectName)
+	b, _ := subserviceModels.ReturnSubServiceLayer("go", name, projectName)
 	// set the filename
 	fileName := fmt.Sprintf("/pkg/sub-services/%s", name+"-service.go")
 	// write the file

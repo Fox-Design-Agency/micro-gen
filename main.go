@@ -2,8 +2,8 @@ package main
 
 import (
 	"micro-gen/pkg/builder"
-	"micro-gen/pkg/models"
 	"micro-gen/pkg/questions"
+	models "micro-gen/pkg/shared/models"
 	"os"
 )
 

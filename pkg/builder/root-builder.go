@@ -3,7 +3,8 @@ package builder
 import (
 	"io/ioutil"
 	"log"
-	"micro-gen/pkg/models"
+	rootfileModels "micro-gen/pkg/models/root-file-models"
+	models "micro-gen/pkg/shared/models"
 	"os"
 )
 
@@ -18,7 +19,7 @@ func initializeRootProject(answers *models.Questions) error {
 	}
 
 	// build root files
-	err = initializeRootFiles(answers)
+	err = initializeRootFiles("go", answers)
 	if err != nil {
 		log.Println(err)
 		os.Exit(1)
@@ -52,7 +53,7 @@ func initializeRootFolders(projectName string, hasDB bool) (err error) {
 	}
 	// if has DB, then build db migrations
 	if hasDB {
-		initializeMigrations(projectName)
+		initializeMigrations("go", projectName)
 	}
 	// build postman
 	err = os.Mkdir(projectName+"/resources/postman", 0755)
@@ -68,33 +69,39 @@ func initializeRootFolders(projectName string, hasDB bool) (err error) {
 // .gitignore
 // .dockerignore
 // README
-func initializeRootFiles(answers *models.Questions) (err error) {
-	// .gitignore creation
-	b, _ := models.ReturnGitignore()
-	err = ioutil.WriteFile(answers.ProjectName+"/.gitignore", b, 0755)
-	if err != nil {
-		log.Fatal(err)
-	}
-	// .dockerignore creation
-	b, _ = models.ReturnDockerignore()
-	err = ioutil.WriteFile(answers.ProjectName+"/.dockerignore", b, 0755)
-	if err != nil {
-		log.Fatal(err)
-	}
-	// README creation
-	b, _ = models.ReturnREADME()
-	err = ioutil.WriteFile(answers.ProjectName+"/README", b, 0755)
-	if err != nil {
-		log.Fatal(err)
-	}
-	// README creation
-	b, _ = models.ReturnDockerfile()
-	err = ioutil.WriteFile(answers.ProjectName+"/Dockerfile", b, 0755)
-	if err != nil {
-		log.Fatal(err)
+func initializeRootFiles(microType string, answers *models.Questions) (err error) {
+	switch microType {
+	case "go":
+		// .gitignore creation
+		b, _ := rootfileModels.ReturnGoGitignore()
+		err = ioutil.WriteFile(answers.ProjectName+"/.gitignore", b, 0755)
+		if err != nil {
+			log.Fatal(err)
+		}
+		// .dockerignore creation
+		b, _ = rootfileModels.ReturnGoDockerignore()
+		err = ioutil.WriteFile(answers.ProjectName+"/.dockerignore", b, 0755)
+		if err != nil {
+			log.Fatal(err)
+		}
+		// README creation
+		b, _ = rootfileModels.ReturnGoREADME()
+		err = ioutil.WriteFile(answers.ProjectName+"/README", b, 0755)
+		if err != nil {
+			log.Fatal(err)
+		}
+		// README creation
+		b, _ = rootfileModels.ReturnGoDockerfile()
+		err = ioutil.WriteFile(answers.ProjectName+"/Dockerfile", b, 0755)
+		if err != nil {
+			log.Fatal(err)
+		}
+
+		return nil
+	default:
+		return nil
 	}
 
-	return nil
 }
 
 // initializeMigrations will create a migrations folder and a blank README
@@ -102,27 +109,32 @@ func initializeRootFiles(answers *models.Questions) (err error) {
 // creates:
 // - 001_seed.sql
 // - 002_seed_func.sql
-func initializeMigrations(projectName string) (err error) {
-	// ensure that the migrations folder exists
-	err = os.Mkdir(projectName+"/resources/migrations", 0755)
-	if err != nil {
-		log.Println(err)
-		os.Exit(1)
+func initializeMigrations(microType, projectName string) (err error) {
+	switch microType {
+	case "go":
+		// ensure that the migrations folder exists
+		err = os.Mkdir(projectName+"/resources/migrations", 0755)
+		if err != nil {
+			log.Println(err)
+			os.Exit(1)
+		}
+
+		// create a blank 001 seed file
+		b1, _ := rootfileModels.ReturnGoMigrationSeedFile()
+		err = ioutil.WriteFile(projectName+"/resources/migrations/001_seed.sql", b1, 0755)
+		if err != nil {
+			log.Fatal(err)
+		}
+
+		// create a blank 001 seed func file
+		err = ioutil.WriteFile(projectName+"/resources/migrations/002_seed_func.sql", b1, 0755)
+		if err != nil {
+			log.Fatal(err)
+		}
+
+		return nil
+	default:
+		return nil
 	}
 
-	// create a blank 001 seed file
-	b1, _ := models.ReturnMigrationSeedFile()
-	err = ioutil.WriteFile(projectName+"/resources/migrations/001_seed.sql", b1, 0755)
-	if err != nil {
-		log.Fatal(err)
-	}
-
-	// create a blank 001 seed func file
-	b2, _ := models.ReturnMigrationSeedFile()
-	err = ioutil.WriteFile(projectName+"/resources/migrations/002_seed_func.sql", b2, 0755)
-	if err != nil {
-		log.Fatal(err)
-	}
-
-	return nil
 }

@@ -1,51 +1,38 @@
-package models
+package subservices
 
 import (
 	"fmt"
-	"log"
+	models "micro-gen/pkg/shared/models"
 	"strings"
 )
 
-// ReturnSubServiceLayer will return the byte slice of the generic SubService
-// layer file
-func ReturnSubServiceLayer(name, projectName string) ([]byte, error) {
-	// top section
-	topString, err := returnSubServiceTop(name, projectName)
-	if err != nil {
-		// handle err
-		log.Println(err)
-	}
-	// definition section
-	definitionString, err := returnSubServiceSvcDefinition(name)
-	if err != nil {
-		// handle err
-		log.Println(err)
-	}
+/**********************************************************************
+/
+/	Sub Service Section
+/
+/**********************************************************************/
 
-	return []byte(topString + definitionString), nil
-}
-
-// returnSubServiceTop will return the string of the top section of the
+// returnGoSubServiceTop will return the string of the top section of the
 // SubService file
-func returnSubServiceTop(name, projectName string) (string, error) {
+func returnGoSubServiceTop(name, projectName string) (string, error) {
 	// main service fun
 	topString := fmt.Sprintf("package services\n\n") +
 		fmt.Sprintf("import (\n") +
 		fmt.Sprintf("	\"%s/pkg/db\"\n", projectName) +
 		fmt.Sprintf("	\"%s/pkg/validation\"\n)\n\n", projectName) +
-		topCommentBlock +
+		models.TopCommentBlock +
 		fmt.Sprintf("\n/ Only Change this section if you are adding a new capability onto") +
 		fmt.Sprintf("\n/ this subservice. Adding any new capability may nessesitate a change") +
 		fmt.Sprintf("\n/ in the services.go With%s func found in pkg/sub-services/services.go", strings.Title(name)) +
 		fmt.Sprintf("\n/ If you do not understand what is happening here, look into") +
 		fmt.Sprintf("\n/ Interface Chaining. \n") +
-		bottomCommentBlock
+		models.BottomCommentBlock
 	return topString, nil
 }
 
-// returnSubServiceSvcDefinition will return the string of the service
+// returnGoSubServiceSvcDefinition will return the string of the service
 // definition for the subService
-func returnSubServiceSvcDefinition(name string) (string, error) {
+func returnGoSubServiceSvcDefinition(name string) (string, error) {
 	// service types
 	srvcDefinitionString := fmt.Sprintf("\n\n // New%s loads related SQL statements and initializes the container struct\n", strings.Title(name)+"Service") +
 		fmt.Sprintf("func New%s(s *Services) %s {\n", strings.Title(name)+"Service", strings.Title(name)+"Service") +
@@ -66,45 +53,11 @@ func returnSubServiceSvcDefinition(name string) (string, error) {
 	return srvcDefinitionString, nil
 }
 
-// ReturnSubServiceServiceFile will return the string for the services.go file
-func ReturnSubServiceServiceFile(serviceArray []string, hasDB bool) ([]byte, error) {
-	// top section
-	topString, err := returnServiceFileTopSection()
-	if err != nil {
-		// handle err
-		log.Println(err)
-	}
-	// with section
-	withString, err := returnServiceFileWithSection(hasDB)
-	if err != nil {
-		// handle err
-		log.Println(err)
-	}
-	// newServicesSection
-	newServicesString, err := returnServiceFileNewServiceSection(hasDB, serviceArray)
-	if err != nil {
-		// handle err
-		log.Println(err)
-	}
-	// Services struct
-	servicesStructString, err := returnServiceFileServicesStructSection(hasDB, serviceArray)
-	if err != nil {
-		// handle err
-		log.Println(err)
-	}
-	// global section
-	globalsString, err := returnServiceFileGlobalSection(hasDB)
-	if err != nil {
-		// handle err
-		log.Println(err)
-	}
-
-	return []byte(topString +
-		withString +
-		newServicesString +
-		servicesStructString +
-		globalsString), nil
-}
+/**********************************************************************
+/
+/	Service File Section
+/
+/**********************************************************************/
 
 // returnServiceFileTopSection will return the string for the top
 // section of the services.go file
@@ -163,9 +116,9 @@ func returnServiceFileNewServiceSection(hasDB bool, serviceArray []string) (stri
 			fmt.Sprintf("	}\n}")
 	}
 	commentBlock := fmt.Sprintf("\n") +
-		topCommentBlock +
+		models.TopCommentBlock +
 		fmt.Sprintf("\n/ 	Shouldn't need to change this.\n") +
-		bottomCommentBlock
+		models.BottomCommentBlock
 
 	structString := fmt.Sprintf("\n\n// NewServices injects the service struct pointer to the above with funcs\n") +
 		fmt.Sprintf("func NewServices(cfgs ...Config) (*Services, error) {\n") +
@@ -185,9 +138,9 @@ func returnServiceFileNewServiceSection(hasDB bool, serviceArray []string) (stri
 // returnServiceFileServicesStructSection will return the string for the
 // services struct that is found in the services.go file
 func returnServiceFileServicesStructSection(hasDB bool, serviceArray []string) (string, error) {
-	commentBlock := topCommentBlock +
+	commentBlock := models.TopCommentBlock +
 		fmt.Sprintf("\n/	Add a field on the Services declaration when adding a new subService\n") +
-		bottomCommentBlock
+		models.BottomCommentBlock
 
 	servicesStruct := fmt.Sprintf("\n\n// Services is all the sub services within this service\n") +
 		fmt.Sprintf("type Services struct {\n")
@@ -207,9 +160,9 @@ func returnServiceFileServicesStructSection(hasDB bool, serviceArray []string) (
 // section that is found at the end of the services.go file and the methods
 // are set onto the services struct
 func returnServiceFileGlobalSection(hasDB bool) (string, error) {
-	globalString := topCommentBlock +
+	globalString := models.TopCommentBlock +
 		fmt.Sprintf("\n/	Add any global methods that services will have access to\n") +
-		bottomCommentBlock
+		models.BottomCommentBlock
 
 	if hasDB {
 		// Close

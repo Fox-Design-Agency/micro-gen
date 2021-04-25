@@ -2,7 +2,7 @@ package builder
 
 import (
 	"log"
-	"micro-gen/pkg/models"
+	models "micro-gen/pkg/shared/models"
 	"os"
 	"os/exec"
 	"strings"
@@ -56,7 +56,7 @@ func IntializeBuild(answers *models.Questions) {
 	}
 
 	// go ahead and initialize middleware
-	err = initializeMiddleware(answers.ProjectName)
+	err = initializeMiddleware("go", answers.ProjectName)
 	if err != nil {
 		log.Println(err)
 		os.Exit(1)

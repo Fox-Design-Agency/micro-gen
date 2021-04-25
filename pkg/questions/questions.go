@@ -4,7 +4,7 @@ import (
 	"log"
 	"os"
 
-	"micro-gen/pkg/models"
+	models "micro-gen/pkg/shared/models"
 )
 
 // IntializeQuestions initializes the questions to

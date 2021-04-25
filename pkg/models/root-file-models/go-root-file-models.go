@@ -1,7 +1,7 @@
 package models
 
-// ReturnGitignore will return the byte slice of the generic .gitignore file
-func ReturnGitignore() ([]byte, error) {
+// ReturnGoGitignore will return the byte slice of the generic .gitignore file
+func ReturnGoGitignore() ([]byte, error) {
 	return []byte(`.DS_Store
 *.[56789ao]
 *.a[56789o]
@@ -75,8 +75,8 @@ config
 secretStuff.go`), nil
 }
 
-// ReturnREADME will return the byte slice of the generic README file
-func ReturnREADME() ([]byte, error) {
+// ReturnGoREADME will return the byte slice of the generic README file
+func ReturnGoREADME() ([]byte, error) {
 	return []byte(`# Some Neat Service
 
 This is a pretty neat service that merits a better README
@@ -162,7 +162,7 @@ Once registered, then go to main.go found in ./run to register the new service a
 }
 
 // ReturnMigrationSeedFile will return the byte slice of the generic Migrations file
-func ReturnMigrationSeedFile() ([]byte, error) {
+func ReturnGoMigrationSeedFile() ([]byte, error) {
 	return []byte(`-- +migrate Up
 	-- SQL in section 'Up' is executed when this migration is applied
 	
@@ -173,8 +173,8 @@ func ReturnMigrationSeedFile() ([]byte, error) {
 	`), nil
 }
 
-// ReturnDockerignore will return the byte slice of the generic .dockerignore file
-func ReturnDockerignore() ([]byte, error) {
+// ReturnGoDockerignore will return the byte slice of the generic .dockerignore file
+func ReturnGoDockerignore() ([]byte, error) {
 	return []byte(`/dist
 /tmp
 /out-tsc
@@ -224,8 +224,8 @@ node_modules
 config`), nil
 }
 
-// ReturnDockerfile will return the byte slice of the generic Dockerfile file
-func ReturnDockerfile() ([]byte, error) {
+// ReturnGoDockerfile will return the byte slice of the generic Dockerfile file
+func ReturnGoDockerfile() ([]byte, error) {
 	return []byte(`# Use the official Golang image to create a build artifact.
 	# This is based on Debian and sets the GOPATH to /go.
 	# https://hub.docker.com/_/golang

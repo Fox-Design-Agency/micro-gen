@@ -1,38 +1,14 @@
-package models
+package db
 
 import (
 	"fmt"
-	"log"
+	sharedModels "micro-gen/pkg/shared/models"
 	"strings"
 )
 
-// ReturnDBLayer will return the byte slice of the generic db file
-func ReturnDBLayer(hasCrud bool, name, projectName string) ([]byte, error) {
-	// top section
-	topString, err := returnTopDBFile(projectName)
-	if err != nil {
-		// handle the err
-		log.Println(err)
-	}
-	// interface section
-	interfaceString, err := returnDBInterfaceDeclartion(hasCrud, name)
-	if err != nil {
-		// handle the err
-		log.Println(err)
-	}
-	// method section
-	methodString, err := returnDBMethodDeclarations(hasCrud, name)
-	if err != nil {
-		// handle the err
-		log.Println(err)
-	}
-
-	return []byte(topString + interfaceString + methodString), nil
-}
-
-// returnTopDBFile will return the top section of the db layer files
+// returnGoTopDBFile will return the top section of the db layer files
 // including the package and import
-func returnTopDBFile(pkgName string) (string, error) {
+func returnGoTopDBFile(pkgName string) (string, error) {
 	pkgStr := fmt.Sprintf("package db\n\n")
 
 	helpersStr := fmt.Sprintf("import \"%s/pkg/helpers\"\n\n", pkgName)
@@ -40,13 +16,13 @@ func returnTopDBFile(pkgName string) (string, error) {
 	return pkgStr + helpersStr, nil
 }
 
-// returnDBInterfaceDeclartion will return the comment block to declare
+// returnGoDBInterfaceDeclartion will return the comment block to declare
 // the db layer interface, the db layer interface, and the public struct
-func returnDBInterfaceDeclartion(hasCrud bool, name string) (string, error) {
+func returnGoDBInterfaceDeclartion(hasCrud bool, name string) (string, error) {
 	// combine the sections to create the comment block
-	commentBlock := topCommentBlock +
+	commentBlock := sharedModels.TopCommentBlock +
 		fmt.Sprintf("\n/ Create the interaction models for the %s\n", strings.Title(name)+"DB") +
-		bottomCommentBlock
+		sharedModels.BottomCommentBlock
 
 	// create the interface
 	interfaceBlock := fmt.Sprintf("\n\n // %s is used to interact and manage %s\n", "I"+strings.Title(name)+"DB", name) +
@@ -71,16 +47,16 @@ func returnDBInterfaceDeclartion(hasCrud bool, name string) (string, error) {
 	return fullInterfaceSection, nil
 }
 
-// returnDBMethodDeclarations will return the comment block describing how to
+// returnGoDBMethodDeclarations will return the comment block describing how to
 // add new methods off of the struct declared in the returnInterfaceDeclartion
 // func, as well as return crud func outlines if desired.
-func returnDBMethodDeclarations(hasCrud bool, name string) (string, error) {
+func returnGoDBMethodDeclarations(hasCrud bool, name string) (string, error) {
 	// combine the sections to create the comment block
-	commentBlock := topCommentBlock +
+	commentBlock := sharedModels.TopCommentBlock +
 		fmt.Sprintf("\n/	Add new methods onto %s that must be defined on the %s\n", strings.Title(name)+"StructDB", strings.Title(name)+"DB") +
 		fmt.Sprintf("/	interface. These methods can be utilized anywhere the %s\n", name) +
 		fmt.Sprintf("/ 	subservice is utilized.\n") +
-		bottomCommentBlock
+		sharedModels.BottomCommentBlock
 
 		// register the method block with an empty line to create intial seperation
 	methodBlock := "\n\n"

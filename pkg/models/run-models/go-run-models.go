@@ -1,68 +1,20 @@
-package models
+package run
 
 import (
 	"fmt"
-	"log"
+	models "micro-gen/pkg/shared/models"
 	"strings"
 )
 
-// ReturnMainFile will return the string for the main.go file
-func ReturnMainFile(serviceArray []string, hasDB bool, projectName string) ([]byte, error) {
-	// top + init
-	topString, err := returnMainTopSection(projectName)
-	if err != nil {
-		// handle err
-		log.Println(err)
-	}
-	// main configuration
-	configString, err := returnMainConfigurationSection(hasDB, serviceArray)
-	if err != nil {
-		// handle err
-		log.Println(err)
-	}
-	// initialize router and router handlers
-	routerString, err := returnMainRouterSection(hasDB, serviceArray)
-	if err != nil {
-		// handle err
-		log.Println(err)
-	}
-	// initialize middleware
-	middlewareString, err := returnMainMiddlewareSection()
-	if err != nil {
-		// handle err
-		log.Println(err)
-	}
-	// health check
-	healthString, err := returnMainHealthSection()
-	if err != nil {
-		// handle err
-		log.Println(err)
-	}
-	// routes
-	routesString, err := returnMainRoutesSection(hasDB, serviceArray)
-	if err != nil {
-		// handle err
-		log.Println(err)
-	}
-	// server
-	serverString, err := returnMainServerSection()
-	if err != nil {
-		// handle err
-		log.Println(err)
-	}
+/**********************************************************************
+/
+/	Main Section
+/
+/**********************************************************************/
 
-	return []byte(topString +
-		configString +
-		routerString +
-		middlewareString +
-		healthString +
-		routesString +
-		serverString), nil
-}
-
-// returnMainTopSection will return the string for the package, imports
+// returnGoMainTopSection will return the string for the package, imports
 // and init section of the main.go file
-func returnMainTopSection(projectName string) (string, error) {
+func returnGoMainTopSection(projectName string) (string, error) {
 	topString := fmt.Sprintf("package main\n\n") +
 		fmt.Sprintf("import (\n") +
 		fmt.Sprintf("	routeHandlers \"%s/pkg/route-handlers\"", projectName) +
@@ -83,13 +35,13 @@ func returnMainTopSection(projectName string) (string, error) {
 	return topString + initString, nil
 }
 
-// returnMainConfigurationSection will return the string for configuration
+// returnGoMainConfigurationSection will return the string for configuration
 // section of the main func in the main.go file
-func returnMainConfigurationSection(hasDB bool, serviceArray []string) (string, error) {
+func returnGoMainConfigurationSection(hasDB bool, serviceArray []string) (string, error) {
 	topString := fmt.Sprintf("func main() {\n\n") +
-		topCommentBlock +
+		models.TopCommentBlock +
 		fmt.Sprintf("\n/	Configuration\n") +
-		bottomCommentBlock +
+		models.BottomCommentBlock +
 		fmt.Sprintf("\n\n // load application configuration\n") +
 		fmt.Sprintf("cfg := LoadConfig()\n\n") +
 		fmt.Sprintf("// default application port\n") +
@@ -122,12 +74,12 @@ func returnMainConfigurationSection(hasDB bool, serviceArray []string) (string, 
 	return topString + serviceDeclarationString, nil
 }
 
-// returnMainRouterSection will return the string for the router
+// returnGoMainRouterSection will return the string for the router
 // section of the main.go file
-func returnMainRouterSection(hasDB bool, serviceArray []string) (string, error) {
-	topString := topCommentBlock +
+func returnGoMainRouterSection(hasDB bool, serviceArray []string) (string, error) {
+	topString := models.TopCommentBlock +
 		fmt.Sprintf("\n/	Initialize router and controllers\n") +
-		bottomCommentBlock +
+		models.BottomCommentBlock +
 		fmt.Sprintf("\n\nr := mux.NewRouter()\n\n")
 	for _, v := range serviceArray {
 		topString += fmt.Sprintf("%sRH := routeHandlers.New%s(\n", strings.ToLower(v), strings.Title(v)) +
@@ -138,48 +90,48 @@ func returnMainRouterSection(hasDB bool, serviceArray []string) (string, error) 
 	return topString, nil
 }
 
-// returnMainMiddlewareSection will return the string for the middleware
+// returnGoMainMiddlewareSection will return the string for the middleware
 // section of the main.go file
-func returnMainMiddlewareSection() (string, error) {
-	topString := topCommentBlock +
+func returnGoMainMiddlewareSection() (string, error) {
+	topString := models.TopCommentBlock +
 		fmt.Sprintf("\n/	Middleware\n") +
-		bottomCommentBlock +
+		models.BottomCommentBlock +
 		fmt.Sprintf("\n\n")
 
 	return topString, nil
 }
 
-// returnMainHealthSection will return the string for the health
+// returnGoMainHealthSection will return the string for the health
 // check section of the main.go file
-func returnMainHealthSection() (string, error) {
-	topString := topCommentBlock +
+func returnGoMainHealthSection() (string, error) {
+	topString := models.TopCommentBlock +
 		fmt.Sprintf("\n/	Health Check & Container routes\n") +
-		bottomCommentBlock +
+		models.BottomCommentBlock +
 		fmt.Sprintf("\n\nr.HandleFunc(\"/health\", func(rw http.ResponseWriter, r *http.Request) { rw.WriteHeader(http.StatusOK) })\n\n")
 
 	return topString, nil
 }
 
-// returnMainRoutesSection will return the string for the routes
+// returnGoMainRoutesSection will return the string for the routes
 // section of the main.go file
-func returnMainRoutesSection(hasDB bool, serviceArray []string) (string, error) {
+func returnGoMainRoutesSection(hasDB bool, serviceArray []string) (string, error) {
 	topString := ""
 	for _, v := range serviceArray {
-		topString += topCommentBlock +
+		topString += models.TopCommentBlock +
 			fmt.Sprintf("\n/	%s routes\n", strings.Title(v)) +
-			bottomCommentBlock +
+			models.BottomCommentBlock +
 			fmt.Sprintf("\n")
 	}
 
 	return topString, nil
 }
 
-// returnMainServerSection will return the string for the server
+// returnGoMainServerSection will return the string for the server
 // section of the main.go file
-func returnMainServerSection() (string, error) {
-	topString := topCommentBlock +
+func returnGoMainServerSection() (string, error) {
+	topString := models.TopCommentBlock +
 		fmt.Sprintf("\n/	Server\n") +
-		bottomCommentBlock +
+		models.BottomCommentBlock +
 		fmt.Sprintf("\n\nvar srv *http.Server\n\n") +
 		fmt.Sprintf("// establishes the server contraints and information\n") +
 		fmt.Sprintf("srv = &http.Server{\n") +
@@ -196,27 +148,15 @@ func returnMainServerSection() (string, error) {
 	return topString, nil
 }
 
-// ReturnConfigFile will return the string for the config.go file
-func ReturnConfigFile() ([]byte, error) {
-	// structs
-	structString, err := returnConfigStructsSection()
-	if err != nil {
-		// handle err
-		log.Println(err)
-	}
-	// funcs
-	funcString, err := returnConfigFuncsSection()
-	if err != nil {
-		// handle err
-		log.Println(err)
-	}
+/**********************************************************************
+/
+/	Config Section
+/
+/**********************************************************************/
 
-	return []byte(structString + funcString), nil
-}
-
-// returnConfigStructsSection will return the string for the structs
+// returnGoConfigStructsSection will return the string for the structs
 // found in the top of the config file
-func returnConfigStructsSection() (string, error) {
+func returnGoConfigStructsSection() (string, error) {
 	topString := fmt.Sprintf("package main\n\n") +
 		fmt.Sprintf("import (\n") +
 		fmt.Sprintf("\"fmt\"\n") +
@@ -239,9 +179,9 @@ func returnConfigStructsSection() (string, error) {
 	return topString + postgreString, nil
 }
 
-// returnConfigFuncsSection will return the string for the funcs
+// returnGoConfigFuncsSection will return the string for the funcs
 // found in the top of the config file
-func returnConfigFuncsSection() (string, error) {
+func returnGoConfigFuncsSection() (string, error) {
 	dialectString := fmt.Sprintf("\n// Dialect states that we are utilizing postrges\n") +
 		fmt.Sprintf("func (c PostgresConfig) Dialect() string {\n") +
 		fmt.Sprintf("	return \"postgres\"\n}\n\n")
@@ -279,20 +219,15 @@ func returnConfigFuncsSection() (string, error) {
 		loadConfigString, nil
 }
 
-// ReturnSecretStuffFile will return the string for the secretStuff.go file
-func ReturnSecretStuffFile() ([]byte, error) {
-	secretString, err := returnSetTheSecretStuff()
-	if err != nil {
-		// handle err
-		log.Println(err)
-	}
+/**********************************************************************
+/
+/	Secret Stuff Section
+/
+/**********************************************************************/
 
-	return []byte(secretString), nil
-}
-
-// returnSetTheSecretStuff will return the string for the func
+// returnGoSetTheSecretStuff will return the string for the func
 // that sets env variables
-func returnSetTheSecretStuff() (string, error) {
+func returnGoSetTheSecretStuff() (string, error) {
 	topString := fmt.Sprintf(`package main
 
 	import (

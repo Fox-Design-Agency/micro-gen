@@ -4,14 +4,14 @@ import (
 	"fmt"
 	"io/ioutil"
 	"log"
-	"micro-gen/pkg/models"
+	models "micro-gen/pkg/models/models-models"
 )
 
 // initializeSubServiceModel will initialize the model files for
 // the desired subService
 func initializeSubServiceModel(name string, projectName string) (err error) {
 	// get the byte slice
-	b, _ := models.ReturnModelLayer(name)
+	b, _ := models.ReturnGoModelLayer("go", name)
 	// set the filename
 	fileName := fmt.Sprintf("/pkg/models/%s", name+"-model.go")
 	// write the file
