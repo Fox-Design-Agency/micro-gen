@@ -9,9 +9,9 @@ import (
 
 // initializeSubServiceModel will initialize the model files for
 // the desired subService
-func initializeSubServiceModel(name string, projectName string) (err error) {
+func initializeSubServiceModel(name, modelName string, projectName string) (err error) {
 	// get the byte slice
-	b, _ := models.ReturnGoModelLayer("go", name)
+	b, _ := models.ReturnGoModelLayer("go", name, modelName)
 	// set the filename
 	fileName := fmt.Sprintf("/pkg/models/%s", name+"-model.go")
 	// write the file

@@ -6,7 +6,7 @@ package models
 type Questions struct {
 	ProjectName string
 	HasHelpers  bool
-	IsCLI       bool
+	// IsCLI       bool
 	HasDB       bool
 	SubServices []*SubService
 	Port        string
@@ -15,7 +15,9 @@ type Questions struct {
 // SubService is the struct type to hold subservice
 // information to generate the desired subservices
 type SubService struct {
-	SubServiceName string
-	HasDB          bool
-	HasCRUD        bool
+	SubServiceName  string
+	HasDB           bool
+	HasCRUD         bool
+	HasRouteHandler bool
+	ModelName       string
 }

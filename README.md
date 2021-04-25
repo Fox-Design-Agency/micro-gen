@@ -62,9 +62,6 @@ The questions are pretty simple:
 
 ## Things To Do
 
-- clean up file formatting
-- add model support to clean up some errors
-- fix route-handler errors
 - add placeholder validation funcs
-- change most of the models in pkg to be constructors?
-- finish implementation for initial go support where other languages can be added easily
+- change most of the models in pkg to be constructors for more semantic naming?
+- finish implementation for initial go support where other languages can be added easily because this is a mess right now

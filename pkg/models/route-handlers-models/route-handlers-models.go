@@ -1,7 +1,7 @@
 package routeHandlers
 
 // ReturnRouteHandlerLayer will return the byte slice of the route handler layer for the selected service
-func ReturnRouteHandlerLayer(microType, name, projectName string, hasCRUD bool) ([]byte, error) {
+func ReturnRouteHandlerLayer(microType, name, modelName, projectName string, hasCRUD, hasHelpers bool) ([]byte, error) {
 
 	switch microType {
 	case "go":
@@ -12,7 +12,7 @@ func ReturnRouteHandlerLayer(microType, name, projectName string, hasCRUD bool) 
 		}
 
 		// call methods section
-		methodsString, err := returnGoRouteHandlerMethods(name, hasCRUD)
+		methodsString, err := returnGoRouteHandlerMethods(name, modelName, hasCRUD, hasHelpers)
 		if err != nil {
 			// handle err
 		}

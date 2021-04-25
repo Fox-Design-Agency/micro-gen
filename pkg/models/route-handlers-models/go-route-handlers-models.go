@@ -11,7 +11,10 @@ import (
 func returnGoRouteHandlerTop(name, projectName string) (string, error) {
 	topString := fmt.Sprintf("package routeHandlers\n\n") +
 		fmt.Sprintf("import (\n") +
+		fmt.Sprintf("	\"encoding/json\"\n") +
+		fmt.Sprintf("	\"log\"\n") +
 		fmt.Sprintf("	\"%s/pkg/helpers\"\n", projectName) +
+		fmt.Sprintf("	\"%s/pkg/models\"\n", projectName) +
 		fmt.Sprintf("	services \"%s/pkg/sub-services\"\n", projectName) +
 		fmt.Sprintf("	\"net/http\"\n)\n\n") +
 		models.TopCommentBlock +
@@ -40,7 +43,7 @@ func returnGoRouteHandlerTop(name, projectName string) (string, error) {
 
 // returnGoRouteHandlerMethods will return the string for the method
 // section definitions
-func returnGoRouteHandlerMethods(name string, hasCRUD bool) (string, error) {
+func returnGoRouteHandlerMethods(name, modelName string, hasCRUD, hasHelpers bool) (string, error) {
 
 	methodBlock := models.TopCommentBlock +
 		fmt.Sprintf("\n/	Add new methods onto %s that can be accessed through the %s\n", strings.Title(name), strings.ToLower(name)) +
@@ -51,93 +54,93 @@ func returnGoRouteHandlerMethods(name string, hasCRUD bool) (string, error) {
 		// Create
 		methodBlock += fmt.Sprintf("\n\n// Create%s will create a %s\n", strings.Title(name), strings.ToLower(name)) +
 			fmt.Sprintf("func (rh *%s) Create%s(w http.ResponseWriter, r *http.Request) {\n", strings.Title(name), strings.Title(name)) +
-			fmt.Sprintf("// validate context \n") +
-			fmt.Sprintf("//\n\n") +
-			fmt.Sprintf("// Parse JSON \n") +
-			fmt.Sprintf("//\n\n") +
-			fmt.Sprintf("// Call DB layer \n") +
-			fmt.Sprintf("if _, err := rh.ss.Create%s(); err != nil {\n", strings.Title(name)) +
-			fmt.Sprintf("// Handle Error \n") +
-			fmt.Sprintf("helpers.SendErrorHeader(w, 500, nil)\n") +
-			fmt.Sprintf("return\n") +
-			fmt.Sprintf("}\n\n") +
-			fmt.Sprintf("// succeeded\n") +
-			fmt.Sprintf("// should send success header\n") +
-			fmt.Sprintf("helpers.SendSuccessHeader(w, nil) \n") +
+			fmt.Sprintf("	// validate context \n") +
+			fmt.Sprintf("	//\n\n") +
+			fmt.Sprintf("	// Parse JSON \n") +
+			fmt.Sprintf("	var form models.%s\n", strings.Title(modelName)) +
+			fmt.Sprintf("	if err := json.NewDecoder(r.Body).Decode(&form); err != nil {\n") +
+			fmt.Sprintf("		log.Println(err)\n") +
+			fmt.Sprintf("		// send error msg\n") +
+			fmt.Sprintf("		return\n	}\n\n") +
+			fmt.Sprintf("	// Call DB layer \n") +
+			fmt.Sprintf("	if err := rh.ss.Create%s(form); err != nil {\n", strings.Title(name)) +
+			fmt.Sprintf("		// Handle Error \n") +
+			fmt.Sprintf("		helpers.SendErrorHeader(w, 500, nil)\n") +
+			fmt.Sprintf("		return\n") +
+			fmt.Sprintf("	}\n\n") +
+			fmt.Sprintf("	// succeeded\n") +
+			fmt.Sprintf("	// should send success header\n") +
+			fmt.Sprintf("	helpers.SendSuccessHeader(w, nil) \n") +
 			fmt.Sprintf("}\n\n")
 
 		// Delete
 		methodBlock += fmt.Sprintf("\n\n// Delete%s will delete a %s\n", strings.Title(name), strings.ToLower(name)) +
 			fmt.Sprintf("func (rh *%s) Delete%s(w http.ResponseWriter, r *http.Request) {\n", strings.Title(name), strings.Title(name)) +
-			fmt.Sprintf("// validate context \n") +
-			fmt.Sprintf("//\n\n") +
-			fmt.Sprintf("// get the query id \n") +
-			fmt.Sprintf("id := r.FormValue(\"id\")\n\n") +
-			fmt.Sprintf("// Call DB layer \n") +
-			fmt.Sprintf("if _, err := rh.ss.Delete%s(id); err != nil {\n", strings.Title(name)) +
-			fmt.Sprintf("// Handle Error \n") +
-			fmt.Sprintf("helpers.SendErrorHeader(w, 500, nil)\n") +
-			fmt.Sprintf("return\n") +
-			fmt.Sprintf("}\n\n") +
-			fmt.Sprintf("// succeeded\n") +
-			fmt.Sprintf("// should send success header\n") +
-			fmt.Sprintf("helpers.SendSuccessHeader(w, nil) \n") +
+			fmt.Sprintf("	// validate context \n") +
+			fmt.Sprintf("	//\n\n") +
+			fmt.Sprintf("	// get the query id \n") +
+			fmt.Sprintf("	id := r.FormValue(\"id\")\n\n") +
+			fmt.Sprintf("	// Call DB layer \n") +
+			fmt.Sprintf("	if err := rh.ss.Delete%s(id); err != nil {\n", strings.Title(name)) +
+			fmt.Sprintf("		// Handle Error \n") +
+			fmt.Sprintf("		helpers.SendErrorHeader(w, 500, nil)\n") +
+			fmt.Sprintf("		return\n") +
+			fmt.Sprintf("	}\n\n") +
+			fmt.Sprintf("	// succeeded\n") +
+			fmt.Sprintf("	// should send success header\n") +
+			fmt.Sprintf("	helpers.SendSuccessHeader(w, nil) \n") +
 			fmt.Sprintf("}\n\n")
 
 		// Get All
 		methodBlock += fmt.Sprintf("\n\n// GetAll%s will get all %s\n", strings.Title(name), strings.ToLower(name)) +
 			fmt.Sprintf("func (rh *%s) GetAll%s(w http.ResponseWriter, r *http.Request) {\n", strings.Title(name), strings.Title(name)) +
-			fmt.Sprintf("// validate context \n") +
-			fmt.Sprintf("//\n\n") +
-			fmt.Sprintf("// get the query id \n") +
-			fmt.Sprintf("id := r.FormValue(\"id\")\n\n") +
-			fmt.Sprintf("// Call DB layer \n") +
-			fmt.Sprintf("if _, err := rh.ss.GetAll%s(id); err != nil {\n", strings.Title(name)) +
-			fmt.Sprintf("// Handle Error \n") +
-			fmt.Sprintf("helpers.SendErrorHeader(w, 500, nil)\n") +
-			fmt.Sprintf("return\n") +
-			fmt.Sprintf("}\n\n") +
-			fmt.Sprintf("// succeeded\n") +
-			fmt.Sprintf("// should send success header\n") +
-			fmt.Sprintf("helpers.SendSuccessHeader(w, nil) \n") +
+			fmt.Sprintf("	// validate context \n") +
+			fmt.Sprintf("	//\n\n") +
+			fmt.Sprintf("	// Call DB layer \n") +
+			fmt.Sprintf("	res, err := rh.ss.GetAll%s()\n", strings.Title(name)) +
+			fmt.Sprintf("	if err != nil {\n") +
+			fmt.Sprintf("		// Handle Error \n") +
+			fmt.Sprintf("		helpers.SendErrorHeader(w, 500, nil)\n") +
+			fmt.Sprintf("	}\n\n") +
+			fmt.Sprintf("	// succeeded\n") +
+			fmt.Sprintf("	// should send success header\n") +
+			fmt.Sprintf("	helpers.SendSuccessHeader(w, res) \n") +
 			fmt.Sprintf("}\n\n")
 
 		// Get
 		methodBlock += fmt.Sprintf("\n\n// Get%s will get a single %s\n", strings.Title(name), strings.ToLower(name)) +
 			fmt.Sprintf("func (rh *%s) Get%s(w http.ResponseWriter, r *http.Request) {\n", strings.Title(name), strings.Title(name)) +
-			fmt.Sprintf("// validate context \n") +
-			fmt.Sprintf("//\n\n") +
-			fmt.Sprintf("// get the query id \n") +
-			fmt.Sprintf("id := r.FormValue(\"id\")\n\n") +
-			fmt.Sprintf("// Call DB layer \n") +
-			fmt.Sprintf("if _, err := rh.ss.Get%s(id); err != nil {\n", strings.Title(name)) +
-			fmt.Sprintf("// Handle Error \n") +
-			fmt.Sprintf("helpers.SendErrorHeader(w, 500, nil)\n") +
-			fmt.Sprintf("return\n") +
-			fmt.Sprintf("}\n\n") +
-			fmt.Sprintf("// succeeded\n") +
-			fmt.Sprintf("// should send success header\n") +
-			fmt.Sprintf("helpers.SendSuccessHeader(w, nil) \n") +
+			fmt.Sprintf("	// validate context \n") +
+			fmt.Sprintf("	//\n\n") +
+			fmt.Sprintf("	// get the query id \n") +
+			fmt.Sprintf("	id := r.FormValue(\"id\")\n\n") +
+			fmt.Sprintf("	// Call DB layer \n") +
+			fmt.Sprintf("	res, err := rh.ss.Get%s(id)\n", strings.Title(name)) +
+			fmt.Sprintf("	if err != nil {\n") +
+			fmt.Sprintf("		// Handle Error \n") +
+			fmt.Sprintf("		helpers.SendErrorHeader(w, 500, nil)\n") +
+			fmt.Sprintf("	}\n\n") +
+			fmt.Sprintf("	// succeeded\n") +
+			fmt.Sprintf("	// should send success header\n") +
+			fmt.Sprintf("	helpers.SendSuccessHeader(w, res) \n") +
 			fmt.Sprintf("}\n\n")
 
 		// Update
 		methodBlock += fmt.Sprintf("\n\n// Update%s will update %s\n", strings.Title(name), strings.ToLower(name)) +
 			fmt.Sprintf("func (rh *%s) Update%s(w http.ResponseWriter, r *http.Request) {\n", strings.Title(name), strings.Title(name)) +
-			fmt.Sprintf("// validate context \n") +
-			fmt.Sprintf("//\n\n") +
-			fmt.Sprintf("// get the query id \n") +
-			fmt.Sprintf("id := r.FormValue(\"id\")\n\n") +
-			fmt.Sprintf("// Parse JSON \n") +
-			fmt.Sprintf("//\n\n") +
-			fmt.Sprintf("// Call DB layer \n") +
-			fmt.Sprintf("if _, err := rh.ss.Update%s(id); err != nil {\n", strings.Title(name)) +
-			fmt.Sprintf("// Handle Error \n") +
-			fmt.Sprintf("helpers.SendErrorHeader(w, 500, nil)\n") +
-			fmt.Sprintf("return\n") +
-			fmt.Sprintf("}\n\n") +
-			fmt.Sprintf("// succeeded\n") +
-			fmt.Sprintf("// should send success header\n") +
-			fmt.Sprintf("helpers.SendSuccessHeader(w, nil) \n") +
+			fmt.Sprintf("	// validate context \n") +
+			fmt.Sprintf("	//\n\n") +
+			fmt.Sprintf("	// Parse JSON \n") +
+			fmt.Sprintf("	//\n\n") +
+			fmt.Sprintf("	// Call DB layer \n") +
+			fmt.Sprintf("	if err := rh.ss.Update%s(); err != nil {\n", strings.Title(name)) +
+			fmt.Sprintf("		// Handle Error \n") +
+			fmt.Sprintf("		helpers.SendErrorHeader(w, 500, nil)\n") +
+			fmt.Sprintf("		return\n") +
+			fmt.Sprintf("	}\n\n") +
+			fmt.Sprintf("	// succeeded\n") +
+			fmt.Sprintf("	// should send success header\n") +
+			fmt.Sprintf("	helpers.SendSuccessHeader(w, nil) \n") +
 			fmt.Sprintf("}\n\n")
 	}
 

@@ -71,12 +71,12 @@ func returnServiceFileTopSection() (string, error) {
 func returnServiceFileWithSection(hasDB bool) (string, error) {
 	topString := fmt.Sprintf("package services\n\n") +
 		fmt.Sprintf("import (\n") +
-		fmt.Sprintf("\"fmt\"\n") +
-		fmt.Sprintf("\"log\"\n\n")
+		fmt.Sprintf("	\"fmt\"\n") +
+		fmt.Sprintf("	\"log\"\n\n")
 	if hasDB {
-		topString += fmt.Sprintf("\"github.com/jmoiron/sqlx\"\n") +
-			fmt.Sprintf("_ \"github.com/lib/pq\" // should be here\n\n") +
-			fmt.Sprintf("migrate \"github.com/rubenv/sql-migrate\"\n")
+		topString += fmt.Sprintf("	\"github.com/jmoiron/sqlx\"\n") +
+			fmt.Sprintf("	_ \"github.com/lib/pq\" // should be here\n\n") +
+			fmt.Sprintf("	migrate \"github.com/rubenv/sql-migrate\"\n")
 	}
 	topString += fmt.Sprintf(")")
 

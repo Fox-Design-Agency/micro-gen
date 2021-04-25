@@ -68,7 +68,7 @@ func IntializeBuild(answers *models.Questions) {
 	// iter on services to populate pkg
 	for _, v := range answers.SubServices {
 		// Create model layer
-		err = initializeSubServiceModel(v.SubServiceName, answers.ProjectName)
+		err = initializeSubServiceModel(v.SubServiceName, v.ModelName, answers.ProjectName)
 		if err != nil {
 			// TODO handle error better
 		}
@@ -76,13 +76,13 @@ func IntializeBuild(answers *models.Questions) {
 		// if has DB
 		if v.HasDB {
 			// Create DB service layer
-			err = initializeDBLayer(v.HasCRUD, v.SubServiceName, answers.ProjectName)
+			err = initializeDBLayer(v.HasCRUD, v.SubServiceName, v.ModelName, answers.ProjectName)
 			if err != nil {
 				// TODO handle error better
 			}
 
 			// Create Validation Service Layer
-			err = initializeValidationLayer(v.SubServiceName, answers.ProjectName)
+			err = initializeValidationLayer(v.SubServiceName, v.ModelName, answers.ProjectName)
 			if err != nil {
 				// TODO handle error better
 			}
@@ -98,13 +98,13 @@ func IntializeBuild(answers *models.Questions) {
 			tempServiceArray = append(tempServiceArray, subServiceName)
 
 		}
-
-		// create subService route handler
-		err = intializeSubServiceRouteHandler(v, answers.ProjectName)
-		if err != nil {
-			// TODO handle error better
+		if v.HasRouteHandler {
+			// create subService route handler
+			err = intializeSubServiceRouteHandler(v, answers.ProjectName, answers.HasHelpers)
+			if err != nil {
+				// TODO handle error better
+			}
 		}
-
 	}
 
 	// @TODO REMOVE

@@ -143,7 +143,7 @@ If more validation is desired, then some things should be considered:
 - is there currently a validation chain?
 - does this require a new validation chain?
 		
-If there is a current validation chain, then add the desired func to validate a single field. Do not try and validate more than a single field where possible. Examples of validation funcs are present in /pkg/validation/alerts-validator.go and /pkg/validation/tenant-validators.go.
+If there is a current validation chain, then add the desired func to validate a single field. Do not try and validate more than a single field where possible.
 		
 If a new validation chain is required, check to see if the appropiate func model and validation runner func exists. If not, then create a new one with the desired model pass through, If it does, then simply go to the correct section and add the function that would utilize interface chaining correctly to then run the desired validation/normalization funcs.
 		
@@ -151,26 +151,25 @@ If a new validation chain is required, check to see if the appropiate func model
 		
 If a new subservice is desired, then make the appropiate files, named appropiatly, in the following folders:
 		
-- ./pkg/controllers: Define the new method and the struct for the controller
+- ./pkg/route-handlers: Define the new method and the struct for the route-handler
 - ./pkg/db: Define the DB interface and DB struct
 - ./pkg/validation
 - ./pkg/services: Define the new service
 		
-Once the outline for the service has been set, it then needs to be registered in services.go found in ./pkg/services. Please maintain alphabetical order for the With funcs.
+Once the outline for the service has been set, it then needs to be registered in services.go found in ./pkg/sub-services. Please maintain alphabetical order for the With funcs.
 		
-Once registered, then go to main.go found in ./run to register the new service and intialize the controller if desired. If routes will connect to this new subservice, then make the appropiate place in the routes section and note the section through comments.`), nil
+Once registered, then go to main.go found in ./run to register the new service and intialize the route-handler if desired. If routes will connect to this new subservice, then make the appropiate place in the routes section and note the section through comments.`), nil
 }
 
 // ReturnMigrationSeedFile will return the byte slice of the generic Migrations file
 func ReturnGoMigrationSeedFile() ([]byte, error) {
 	return []byte(`-- +migrate Up
-	-- SQL in section 'Up' is executed when this migration is applied
+-- SQL in section 'Up' is executed when this migration is applied
 	
 	
 	
-	-- +migrate Down
-	-- SQL section 'Down' is executed when this migration is rolled back
-	`), nil
+-- +migrate Down
+-- SQL section 'Down' is executed when this migration is rolled back`), nil
 }
 
 // ReturnGoDockerignore will return the byte slice of the generic .dockerignore file

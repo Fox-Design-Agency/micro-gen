@@ -9,6 +9,7 @@ import (
 
 // IntializeQuestions initializes the questions to
 // determine the appropiate service pattern to generate
+// @TODO questions should be based on the languaged desire ot intiialize
 func IntializeQuestions(answers *models.Questions) {
 	log.Println("Welcome to the Micro Service Generator")
 	log.Println("This generator will ask a series of questions and generate the template structure files")
@@ -22,6 +23,7 @@ func IntializeQuestions(answers *models.Questions) {
 	answers.ProjectName = stringResult
 
 	// check if should initialize with generic helpers
+	// @TODO add a select to choose which helpers to initialize
 	boolResult, err := runBoolPrompt("Initialize generic helpers?", "Create Helpers", []string{"Yes", "No"})
 	if err != nil {
 		log.Println("Prompt failed")
@@ -44,6 +46,8 @@ func IntializeQuestions(answers *models.Questions) {
 		os.Exit(1)
 	}
 	answers.HasDB = boolResult
+
+	// @TODO should be able to select which DB
 
 	// query number of services
 	int64Result, err := runNumberPrompt("How many SubServices are in the project?", "SubService Count")

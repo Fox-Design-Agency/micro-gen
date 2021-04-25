@@ -5,7 +5,7 @@ import (
 )
 
 // ReturnDBLayer will return the byte slice of the generic db file
-func ReturnDBLayer(microType string, hasCrud bool, name, projectName string) ([]byte, error) {
+func ReturnDBLayer(microType string, hasCrud bool, name, modelName, projectName string) ([]byte, error) {
 	switch microType {
 	case "go":
 		// top section
@@ -15,13 +15,13 @@ func ReturnDBLayer(microType string, hasCrud bool, name, projectName string) ([]
 			log.Println(err)
 		}
 		// interface section
-		interfaceString, err := returnGoDBInterfaceDeclartion(hasCrud, name)
+		interfaceString, err := returnGoDBInterfaceDeclartion(hasCrud, name, modelName)
 		if err != nil {
 			// handle the err
 			log.Println(err)
 		}
 		// method section
-		methodString, err := returnGoDBMethodDeclarations(hasCrud, name)
+		methodString, err := returnGoDBMethodDeclarations(hasCrud, name, modelName)
 		if err != nil {
 			// handle the err
 			log.Println(err)

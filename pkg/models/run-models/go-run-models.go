@@ -27,10 +27,10 @@ func returnGoMainTopSection(projectName string) (string, error) {
 		fmt.Sprintf("	\"github.com/gorilla/mux\"\n)\n\n")
 
 	initString := fmt.Sprintf("func init() {\n") +
-		fmt.Sprintf("// run the secrets, hidden with the .gitignore\n") +
-		fmt.Sprintf("// basically just sets the ENV vars for:\n") +
-		fmt.Sprintf("// DBHOST, DBNAME, DBUSER, DBPASS, PORT, ENVIRONMENT\n") +
-		fmt.Sprintf("setTheSecrets()\n}\n\n")
+		fmt.Sprintf("	// run the secrets, hidden with the .gitignore\n") +
+		fmt.Sprintf("	// basically just sets the ENV vars for:\n") +
+		fmt.Sprintf("	// DBHOST, DBNAME, DBUSER, DBPASS, PORT, ENVIRONMENT\n") +
+		fmt.Sprintf("	setTheSecrets()\n}\n\n")
 
 	return topString + initString, nil
 }
@@ -42,33 +42,33 @@ func returnGoMainConfigurationSection(hasDB bool, serviceArray []string) (string
 		models.TopCommentBlock +
 		fmt.Sprintf("\n/	Configuration\n") +
 		models.BottomCommentBlock +
-		fmt.Sprintf("\n\n // load application configuration\n") +
-		fmt.Sprintf("cfg := LoadConfig()\n\n") +
-		fmt.Sprintf("// default application port\n") +
-		fmt.Sprintf("port := cfg.Port\n\n") +
-		fmt.Sprintf("// set db config to pass to service intialization\n") +
-		fmt.Sprintf("dbCfg := cfg.Database\n\n")
+		fmt.Sprintf("\n\n	// load application configuration\n") +
+		fmt.Sprintf("	cfg := LoadConfig()\n\n") +
+		fmt.Sprintf("	// default application port\n") +
+		fmt.Sprintf("	port := cfg.Port\n\n") +
+		fmt.Sprintf("	// set db config to pass to service intialization\n") +
+		fmt.Sprintf("	dbCfg := cfg.Database\n\n")
 
-	serviceDeclarationString := fmt.Sprintf("srvcs, err := services.NewServices(\n")
+	serviceDeclarationString := fmt.Sprintf("	srvcs, err := services.NewServices(\n")
 	if hasDB {
-		serviceDeclarationString += fmt.Sprintf("services.WithPostgres(dbCfg.Dialect(), dbCfg.Connection()),\n")
+		serviceDeclarationString += fmt.Sprintf("	services.WithPostgres(dbCfg.Dialect(), dbCfg.Connection()),\n")
 	}
 	for _, v := range serviceArray {
-		serviceDeclarationString += fmt.Sprintf("services.With%s(),\n", strings.Title(v))
+		serviceDeclarationString += fmt.Sprintf("		services.With%s(),\n", strings.Title(v))
 	}
-	serviceDeclarationString += fmt.Sprintf(")\n") +
-		fmt.Sprintf("if err != nil {\n") +
-		fmt.Sprintf("// services couldnt be made, should probably panic?\n") +
-		fmt.Sprintf("// something here\n") +
-		fmt.Sprintf("log.Println(err)\n") +
-		fmt.Sprintf("return\n}\n")
+	serviceDeclarationString += fmt.Sprintf("	)\n") +
+		fmt.Sprintf("	if err != nil {\n") +
+		fmt.Sprintf("		// services couldnt be made, should probably panic?\n") +
+		fmt.Sprintf("		// something here\n") +
+		fmt.Sprintf("		log.Println(err)\n") +
+		fmt.Sprintf("		return\n	}\n")
 	if hasDB {
-		serviceDeclarationString += fmt.Sprintf("defer srvcs.Close()\n") +
-			fmt.Sprintf("//run migrates\n") +
-			fmt.Sprintf("err = srvcs.MigrateDBUP()\n") +
-			fmt.Sprintf("if err != nil {\n") +
-			fmt.Sprintf("// migrations couldn't happen\n") +
-			fmt.Sprintf("log.Println(err)\n}\n\n")
+		serviceDeclarationString += fmt.Sprintf("	defer srvcs.Close()\n") +
+			fmt.Sprintf("	//run migrates\n") +
+			fmt.Sprintf("	err = srvcs.MigrateDBUP()\n") +
+			fmt.Sprintf("	if err != nil {\n") +
+			fmt.Sprintf("		// migrations couldn't happen\n") +
+			fmt.Sprintf("		log.Println(err)\n	}\n\n")
 	}
 
 	return topString + serviceDeclarationString, nil
@@ -80,10 +80,10 @@ func returnGoMainRouterSection(hasDB bool, serviceArray []string) (string, error
 	topString := models.TopCommentBlock +
 		fmt.Sprintf("\n/	Initialize router and controllers\n") +
 		models.BottomCommentBlock +
-		fmt.Sprintf("\n\nr := mux.NewRouter()\n\n")
+		fmt.Sprintf("\n\n	r := mux.NewRouter()\n\n")
 	for _, v := range serviceArray {
-		topString += fmt.Sprintf("%sRH := routeHandlers.New%s(\n", strings.ToLower(v), strings.Title(v)) +
-			fmt.Sprintf("	srvcs.%s)\n", strings.Title(v))
+		topString += fmt.Sprintf("	%sRH := routeHandlers.New%s(\n", strings.ToLower(v), strings.Title(v)) +
+			fmt.Sprintf("	srvcs.%s\n	)\n", strings.Title(v))
 	}
 	topString += fmt.Sprintf("\n")
 
@@ -107,7 +107,7 @@ func returnGoMainHealthSection() (string, error) {
 	topString := models.TopCommentBlock +
 		fmt.Sprintf("\n/	Health Check & Container routes\n") +
 		models.BottomCommentBlock +
-		fmt.Sprintf("\n\nr.HandleFunc(\"/health\", func(rw http.ResponseWriter, r *http.Request) { rw.WriteHeader(http.StatusOK) })\n\n")
+		fmt.Sprintf("\n\n	r.HandleFunc(\"/health\", func(rw http.ResponseWriter, r *http.Request) { rw.WriteHeader(http.StatusOK) })\n\n")
 
 	return topString, nil
 }
@@ -132,18 +132,18 @@ func returnGoMainServerSection() (string, error) {
 	topString := models.TopCommentBlock +
 		fmt.Sprintf("\n/	Server\n") +
 		models.BottomCommentBlock +
-		fmt.Sprintf("\n\nvar srv *http.Server\n\n") +
-		fmt.Sprintf("// establishes the server contraints and information\n") +
-		fmt.Sprintf("srv = &http.Server{\n") +
-		fmt.Sprintf("Handler: handlers.CORS(handlers.AllowedHeaders([]string{\"origin\", \"X-Requested-With\", \"Content-Type\", \"Authorization\"}), handlers.AllowedMethods([]string{\"GET\", \"POST\", \"PUT\", \"HEAD\", \"OPTIONS\"}),\n") +
-		fmt.Sprintf("handlers.AllowedOrigins([]string{\"*\"}),\n") +
-		fmt.Sprintf("handlers.AllowCredentials())(r),\n") +
-		fmt.Sprintf("Addr:         fmt.Sprintf(\":%%s\", port),\n") +
-		fmt.Sprintf("WriteTimeout: 15 * time.Minute,\n") +
-		fmt.Sprintf("ReadTimeout:  15 * time.Minute,\n}\n\n") +
-		fmt.Sprintf("// runs the server\n") +
-		fmt.Sprintf("log.Println(\"Running local on port: \", port)\n") +
-		fmt.Sprintf("log.Fatal(srv.ListenAndServe())\n}")
+		fmt.Sprintf("\n\n	var srv *http.Server\n\n") +
+		fmt.Sprintf("	// establishes the server contraints and information\n") +
+		fmt.Sprintf("	srv = &http.Server{\n") +
+		fmt.Sprintf("	Handler: handlers.CORS(handlers.AllowedHeaders([]string{\"origin\", \"X-Requested-With\", \"Content-Type\", \"Authorization\"}), handlers.AllowedMethods([]string{\"GET\", \"POST\", \"PUT\", \"HEAD\", \"OPTIONS\"}),\n") +
+		fmt.Sprintf("	handlers.AllowedOrigins([]string{\"*\"}),\n") +
+		fmt.Sprintf("	handlers.AllowCredentials())(r),\n") +
+		fmt.Sprintf("	Addr:         fmt.Sprintf(\":%%s\", port),\n") +
+		fmt.Sprintf("	WriteTimeout: 15 * time.Minute,\n") +
+		fmt.Sprintf("	ReadTimeout:  15 * time.Minute,\n}\n\n") +
+		fmt.Sprintf("	// runs the server\n") +
+		fmt.Sprintf("	log.Println(\"Running local on port: \", port)\n") +
+		fmt.Sprintf("	log.Fatal(srv.ListenAndServe())\n}")
 
 	return topString, nil
 }
@@ -159,8 +159,8 @@ func returnGoMainServerSection() (string, error) {
 func returnGoConfigStructsSection() (string, error) {
 	topString := fmt.Sprintf("package main\n\n") +
 		fmt.Sprintf("import (\n") +
-		fmt.Sprintf("\"fmt\"\n") +
-		fmt.Sprintf("\"os\"\n") +
+		fmt.Sprintf("	\"fmt\"\n") +
+		fmt.Sprintf("	\"os\"\n") +
 		fmt.Sprintf(")\n\n") +
 		fmt.Sprintf("// Config is the struct to define our applciation configuration\n") +
 		fmt.Sprintf("type Config struct {\n") +
@@ -182,7 +182,7 @@ func returnGoConfigStructsSection() (string, error) {
 // returnGoConfigFuncsSection will return the string for the funcs
 // found in the top of the config file
 func returnGoConfigFuncsSection() (string, error) {
-	dialectString := fmt.Sprintf("\n// Dialect states that we are utilizing postrges\n") +
+	dialectString := fmt.Sprintf("\n// Dialect states that we are utilizing postgres\n") +
 		fmt.Sprintf("func (c PostgresConfig) Dialect() string {\n") +
 		fmt.Sprintf("	return \"postgres\"\n}\n\n")
 

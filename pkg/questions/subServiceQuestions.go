@@ -18,6 +18,14 @@ func IntializeSubServiceQuestions(subStruct *models.SubService, hasDB bool) erro
 	}
 	subStruct.SubServiceName = stringResult
 
+	// Set the subservice model name
+	stringResult, err = runStringPrompt("What should the model be called?", "Model Name")
+	if err != nil {
+		log.Println("Prompt failed")
+		os.Exit(1)
+	}
+	subStruct.ModelName = stringResult
+
 	// if the microsrvice has a DB, check if the subservice requires a DB layer
 	if hasDB {
 		// Has DB
@@ -38,6 +46,14 @@ func IntializeSubServiceQuestions(subStruct *models.SubService, hasDB bool) erro
 			subStruct.HasCRUD = boolResult
 		}
 	}
+
+	// check if this service needs a routeHandler
+	boolResult, err := runBoolPrompt("Does this need a route handler?", "Needs route handler", []string{"Yes", "No"})
+	if err != nil {
+		log.Println("Prompt failed")
+		os.Exit(1)
+	}
+	subStruct.HasRouteHandler = boolResult
 
 	return nil
 }

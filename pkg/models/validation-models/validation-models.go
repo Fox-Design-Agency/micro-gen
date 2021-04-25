@@ -5,7 +5,7 @@ import (
 )
 
 // ReturnValidationLayer will return the byte slice of the generic validation file
-func ReturnValidationLayer(microType, name, projectName string) ([]byte, error) {
+func ReturnValidationLayer(microType, name, modelName, projectName string) ([]byte, error) {
 	switch microType {
 	case "go":
 		// top section
@@ -15,7 +15,7 @@ func ReturnValidationLayer(microType, name, projectName string) ([]byte, error) 
 			log.Println(err)
 		}
 		// definition section
-		definitionString, err := returnGoValidationDefinitions(name)
+		definitionString, err := returnGoValidationDefinitions(name, modelName)
 		if err != nil {
 			// handle the err
 			log.Println(err)
