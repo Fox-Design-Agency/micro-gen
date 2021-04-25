@@ -22,7 +22,9 @@ func main() {
 	questions.IntializeQuestions(&answers)
 
 	// utlize answers to pass to the builder
-	builder.IntializeBuild(&answers)
+	// @TODO capture which code to build microservice in
+	// for now just default to go
+	builder.IntializeBuild(&answers, "go")
 
 	os.Exit(1)
 }

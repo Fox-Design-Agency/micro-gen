@@ -4,16 +4,23 @@ import (
 	"fmt"
 	"io/ioutil"
 	"log"
-	validationModels "micro-gen/pkg/models/validation-models"
+	validationConstructors "micro-gen/pkg/constructors/validation-constructor"
 )
 
 // initializeValidationLayer will initialize the validation layer
 // for the desired subService
-func initializeValidationLayer(name, modelName, projectName string) (err error) {
+func initializeValidationLayer(microType, name, modelName, projectName string) (err error) {
 	// get the byte slice
-	b, _ := validationModels.ReturnValidationLayer("go", name, modelName, projectName)
+	b, _ := validationConstructors.ReturnValidationLayer(microType, name, modelName, projectName)
+	var fileEnding string
+	var filePath string
+	switch microType {
+	case "go":
+		fileEnding = "-validator.go"
+		filePath = "/pkg/validation/"
+	}
 	// set the filename
-	fileName := fmt.Sprintf("/pkg/validation/%s", name+"-validator.go")
+	fileName := fmt.Sprintf("%s", filePath+name+fileEnding)
 	// write the file
 	err = ioutil.WriteFile(projectName+fileName, b, 0755)
 	if err != nil {

@@ -136,12 +136,12 @@ func returnGoMainServerSection() (string, error) {
 		fmt.Sprintf("\n\n	var srv *http.Server\n\n") +
 		fmt.Sprintf("	// establishes the server contraints and information\n") +
 		fmt.Sprintf("	srv = &http.Server{\n") +
-		fmt.Sprintf("	Handler: handlers.CORS(handlers.AllowedHeaders([]string{\"origin\", \"X-Requested-With\", \"Content-Type\", \"Authorization\"}), handlers.AllowedMethods([]string{\"GET\", \"POST\", \"PUT\", \"HEAD\", \"OPTIONS\"}),\n") +
-		fmt.Sprintf("	handlers.AllowedOrigins([]string{\"*\"}),\n") +
-		fmt.Sprintf("	handlers.AllowCredentials())(r),\n") +
-		fmt.Sprintf("	Addr:         fmt.Sprintf(\":%%s\", port),\n") +
-		fmt.Sprintf("	WriteTimeout: 15 * time.Minute,\n") +
-		fmt.Sprintf("	ReadTimeout:  15 * time.Minute,\n}\n\n") +
+		fmt.Sprintf("		Handler: handlers.CORS(handlers.AllowedHeaders([]string{\"origin\", \"X-Requested-With\", \"Content-Type\", \"Authorization\"}), handlers.AllowedMethods([]string{\"GET\", \"POST\", \"PUT\", \"HEAD\", \"OPTIONS\"}),\n") +
+		fmt.Sprintf("			handlers.AllowedOrigins([]string{\"*\"}),\n") +
+		fmt.Sprintf("			handlers.AllowCredentials())(r),\n") +
+		fmt.Sprintf("		Addr:         fmt.Sprintf(\":%%s\", port),\n") +
+		fmt.Sprintf("		WriteTimeout: 15 * time.Minute,\n") +
+		fmt.Sprintf("		ReadTimeout:  15 * time.Minute,\n	}\n\n") +
 		fmt.Sprintf("	// runs the server\n") +
 		fmt.Sprintf("	log.Println(\"Running local on port: \", port)\n") +
 		fmt.Sprintf("	log.Fatal(srv.ListenAndServe())\n}")

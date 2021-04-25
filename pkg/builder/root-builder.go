@@ -3,14 +3,14 @@ package builder
 import (
 	"io/ioutil"
 	"log"
-	rootfileModels "micro-gen/pkg/models/root-file-models"
+	rootfileConstructors "micro-gen/pkg/constructors/root-file-constructor"
 	models "micro-gen/pkg/shared/models"
 	"os"
 )
 
 // initializeRootProject will create the base folder and the initial files
 // that are found in the root of the project
-func initializeRootProject(answers *models.Questions) error {
+func initializeRootProject(answers *models.Questions, microType string) error {
 	// build root folder
 	err := os.Mkdir(answers.ProjectName, 0755)
 	if err != nil {
@@ -19,7 +19,7 @@ func initializeRootProject(answers *models.Questions) error {
 	}
 
 	// build root files
-	err = initializeRootFiles("go", answers)
+	err = initializeRootFiles(microType, answers)
 	if err != nil {
 		log.Println(err)
 		os.Exit(1)
@@ -30,38 +30,44 @@ func initializeRootProject(answers *models.Questions) error {
 
 // initializeRootFolders will create the pkg and run folders required for
 // file creation
-func initializeRootFolders(projectName string, hasDB bool) (err error) {
-	// build pkg
-	err = os.Mkdir(projectName+"/pkg", 0755)
-	if err != nil {
-		log.Println(err)
-		os.Exit(1)
-	}
+func initializeRootFolders(microType, projectName string, hasDB bool) (err error) {
+	switch microType {
+	case "go":
+		// build pkg
+		err = os.Mkdir(projectName+"/pkg", 0755)
+		if err != nil {
+			log.Println(err)
+			os.Exit(1)
+		}
 
-	// build run
-	err = os.Mkdir(projectName+"/run", 0755)
-	if err != nil {
-		log.Println(err)
-		os.Exit(1)
-	}
+		// build run
+		err = os.Mkdir(projectName+"/run", 0755)
+		if err != nil {
+			log.Println(err)
+			os.Exit(1)
+		}
 
-	// ensure that the resources folder exists
-	err = os.Mkdir(projectName+"/resources", 0755)
-	if err != nil {
-		log.Println(err)
-		os.Exit(1)
+		// ensure that the resources folder exists
+		err = os.Mkdir(projectName+"/resources", 0755)
+		if err != nil {
+			log.Println(err)
+			os.Exit(1)
+		}
+		// if has DB, then build db migrations
+		if hasDB {
+			initializeMigrations(microType, projectName)
+		}
+		// build postman
+		err = os.Mkdir(projectName+"/resources/postman", 0755)
+		if err != nil {
+			log.Println(err)
+			os.Exit(1)
+		}
+		return nil
+	default:
+		// handle error on bad microType
+		return nil
 	}
-	// if has DB, then build db migrations
-	if hasDB {
-		initializeMigrations("go", projectName)
-	}
-	// build postman
-	err = os.Mkdir(projectName+"/resources/postman", 0755)
-	if err != nil {
-		log.Println(err)
-		os.Exit(1)
-	}
-	return nil
 }
 
 // initializeRootFiles will create the generic root files for the project
@@ -73,32 +79,32 @@ func initializeRootFiles(microType string, answers *models.Questions) (err error
 	switch microType {
 	case "go":
 		// .gitignore creation
-		b, _ := rootfileModels.ReturnGoGitignore()
+		b, _ := rootfileConstructors.ReturnGoGitignore()
 		err = ioutil.WriteFile(answers.ProjectName+"/.gitignore", b, 0755)
 		if err != nil {
 			log.Fatal(err)
 		}
 		// .dockerignore creation
-		b, _ = rootfileModels.ReturnGoDockerignore()
+		b, _ = rootfileConstructors.ReturnGoDockerignore()
 		err = ioutil.WriteFile(answers.ProjectName+"/.dockerignore", b, 0755)
 		if err != nil {
 			log.Fatal(err)
 		}
 		// README creation
-		b, _ = rootfileModels.ReturnGoREADME()
+		b, _ = rootfileConstructors.ReturnGoREADME()
 		err = ioutil.WriteFile(answers.ProjectName+"/README", b, 0755)
 		if err != nil {
 			log.Fatal(err)
 		}
 		// README creation
-		b, _ = rootfileModels.ReturnGoDockerfile()
+		b, _ = rootfileConstructors.ReturnGoDockerfile()
 		err = ioutil.WriteFile(answers.ProjectName+"/Dockerfile", b, 0755)
 		if err != nil {
 			log.Fatal(err)
 		}
-
 		return nil
 	default:
+		// handle error on bad microType
 		return nil
 	}
 
@@ -120,7 +126,7 @@ func initializeMigrations(microType, projectName string) (err error) {
 		}
 
 		// create a blank 001 seed file
-		b1, _ := rootfileModels.ReturnGoMigrationSeedFile()
+		b1, _ := rootfileConstructors.ReturnGoMigrationSeedFile()
 		err = ioutil.WriteFile(projectName+"/resources/migrations/001_seed.sql", b1, 0755)
 		if err != nil {
 			log.Fatal(err)

@@ -63,5 +63,3 @@ The questions are pretty simple:
 ## Things To Do
 
 - add placeholder validation funcs
-- change most of the models in pkg to be constructors for more semantic naming?
-- finish implementation for initial go support where other languages can be added easily because this is a mess right now
