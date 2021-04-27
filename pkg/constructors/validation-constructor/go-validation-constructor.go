@@ -26,7 +26,7 @@ func returnGoTopValidationFile(projectName string) (string, error) {
 
 // returnGoValidationDefinitions will return the string of the definitions
 // for the validation layer of the service
-func returnGoValidationDefinitions(name, modelName string) (string, error) {
+func returnGoValidationDefinitions(name, modelName string, hasCRUD bool) (string, error) {
 	validationDefinitions := fmt.Sprintf("\n\n // %s is the validation/normalization struct for %s\n", strings.Title(name)+"Validator", name) +
 		fmt.Sprintf("type %s struct {\n", strings.Title(name)+"Validator") +
 		fmt.Sprintf("	db.I%s\n}\n\n", strings.Title(name)+"DB") +
@@ -46,10 +46,36 @@ func returnGoValidationDefinitions(name, modelName string) (string, error) {
 		fmt.Sprintf("\n/	Add New validation runner methods below \n") +
 		models.BottomCommentBlock
 
+	// if hasCRUD, add a validation placeholder for create
+	if hasCRUD {
+		validationRunnerMethods += fmt.Sprintf("\n\n// Create%s will validate and normalize the %s fields\n", strings.Title(name), strings.Title(modelName)) +
+			fmt.Sprintf("func (v *%sValidator) Create%s(payload *models.%s) error {\n", strings.Title(name), strings.Title(name), strings.Title(modelName)) +
+			fmt.Sprintf("	err := run%sValFuncs(payload);// add in validation/normalization methods\n", strings.Title(name)) +
+			fmt.Sprintf("	if err != nil {\n") +
+			fmt.Sprintf("		return err\n") +
+			fmt.Sprintf("	}\n") +
+			fmt.Sprintf("	return v.I%sDB.Create%s(payload)\n}\n\n", strings.Title(name), strings.Title(name))
+	} else {
+		validationRunnerMethods += fmt.Sprintf("\n\n/* this is an example method runner\n") +
+			fmt.Sprintf("func (v *ExampleValidator) Example(payload *models.Example) error {\n") +
+			fmt.Sprintf("	if err := runExampleValFuncs(payload); // add in validation/normalization methods") +
+			fmt.Sprintf("		); err != nil {\n") +
+			fmt.Sprintf("		return err\n") +
+			fmt.Sprintf("	}\n") +
+			fmt.Sprintf("	return v.ExampleDB.Example(payload)\n}*/\n\n")
+	}
+
 	validationsMethods := fmt.Sprintf("\n\n") +
 		models.TopCommentBlock +
 		fmt.Sprintf("\n/	Add New validation/normalization methods below\n") +
-		models.BottomCommentBlock
+		models.BottomCommentBlock +
+		fmt.Sprintf("\n\n/* this is an example method\n") +
+		fmt.Sprintf("func (v *ExampleValidator) exampleIDMinLength(example *models.Example) error {\n") +
+		fmt.Sprintf("	if len(example.ID) > 256 {\n") +
+		fmt.Sprintf("		return models.ErrIDTooLong\n	}\n") +
+		fmt.Sprintf("	return nil\n}*/\n\n")
+
+	// add a commented method example
 
 	fullValidation := validationDefinitions +
 		validationRunnerFunc +

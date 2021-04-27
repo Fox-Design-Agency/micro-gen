@@ -85,7 +85,7 @@ func IntializeBuild(answers *models.Questions, microType string) {
 			}
 
 			// Create Validation Service Layer
-			err = initializeValidationLayer(microType, v.SubServiceName, v.ModelName, answers.ProjectName)
+			err = initializeValidationLayer(microType, v.SubServiceName, v.ModelName, answers.ProjectName, v.HasCRUD)
 			if err != nil {
 				// TODO handle error better
 			}

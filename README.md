@@ -62,4 +62,6 @@ The questions are pretty simple:
 
 ## Things To Do
 
-- add placeholder validation funcs
+- add helper string normalizer funcs
+- capture actual flags to send
+- create help flag text

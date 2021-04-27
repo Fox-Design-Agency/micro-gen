@@ -9,9 +9,9 @@ import (
 
 // initializeValidationLayer will initialize the validation layer
 // for the desired subService
-func initializeValidationLayer(microType, name, modelName, projectName string) (err error) {
+func initializeValidationLayer(microType, name, modelName, projectName string, hasCRUD bool) (err error) {
 	// get the byte slice
-	b, _ := validationConstructors.ReturnValidationLayer(microType, name, modelName, projectName)
+	b, _ := validationConstructors.ReturnValidationLayer(microType, name, modelName, projectName, hasCRUD)
 	var fileEnding string
 	var filePath string
 	switch microType {

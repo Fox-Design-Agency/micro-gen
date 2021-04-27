@@ -101,6 +101,7 @@ func returnGoRouteHandlerMethods(name, modelName string, hasCRUD, hasHelpers boo
 			fmt.Sprintf("	if err != nil {\n") +
 			fmt.Sprintf("		// Handle Error \n") +
 			fmt.Sprintf("		helpers.SendErrorHeader(w, 500, nil)\n") +
+			fmt.Sprintf("		return\n") +
 			fmt.Sprintf("	}\n\n") +
 			fmt.Sprintf("	// succeeded\n") +
 			fmt.Sprintf("	// should send success header\n") +
@@ -119,6 +120,7 @@ func returnGoRouteHandlerMethods(name, modelName string, hasCRUD, hasHelpers boo
 			fmt.Sprintf("	if err != nil {\n") +
 			fmt.Sprintf("		// Handle Error \n") +
 			fmt.Sprintf("		helpers.SendErrorHeader(w, 500, nil)\n") +
+			fmt.Sprintf("		return\n") +
 			fmt.Sprintf("	}\n\n") +
 			fmt.Sprintf("	// succeeded\n") +
 			fmt.Sprintf("	// should send success header\n") +
